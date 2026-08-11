@@ -1,0 +1,53 @@
+// 開発環境: SQLite / 本番環境: PostgreSQL
+//
+// 本番へ切り替える場合は provider を "postgresql" に変更し、
+// DATABASE_URL に PostgreSQL の接続文字列を設定して
+// `npx prisma migrate deploy` を実行する。
+// フィールド型は SQLite / PostgreSQL 両対応のもののみ使用している
+// (categories は JSON文字列として String に保存)。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Subscriber {
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  maskedEmail         String
+  // トークン本体は保存しない。HMAC-SHA256ハッシュのみ保存する
+  preferenceTokenHash String   @unique
+  tokenExpiresAt      DateTime
+  // active | opted_out
+  status              String   @default("active")
+  // 現在選択中のカテゴリー(JSON配列文字列 例: ["iphone","arbitrage"])
+  // null = まだ一度も選択していない
+  categories          String?
+  consentEvents       ConsentEvent[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model ConsentEvent {
+  id              String     @id @default(cuid())
+  subscriberId    String
+  subscriber      Subscriber @relation(fields: [subscriberId], references: [id])
+  // JSON配列文字列。両方選択時も ["iphone","arbitrage"] と個別に保存する
+  categories      String
+  // consent_confirmed | preferences_updated | all_marketing_opted_out
+  action          String
+  consentVersion  String
+  // 同意文言全文のSHA-256ハッシュ(文言の事後改ざん検知・証跡用)
+  consentTextHash String
+  campaignId      String
+  // クライアント生成の冪等キー。二重POSTでも重複記録しない
+  requestId       String     @unique
+  userAgent       String?
+  createdAt       DateTime   @default(now())
+
+  @@index([subscriberId, createdAt])
+}
