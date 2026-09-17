@@ -1529,3 +1529,24 @@ body:has(.ks) {
     animation: none;
   }
 }
+
+/* ===== 2026/09/17 ファンクラブ版で追加 ===== */
+/* 料金カードを1枚だけ中央に置く */
+.ks .pricing--single {
+  grid-template-columns: minmax(0, 560px);
+  justify-content: center;
+}
+/* 3セルの金罫グリッド(パスポート) */
+.ks .precepts--three {
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 960px) {
+  .ks .precepts--three {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .ks .precepts--three {
+    grid-template-columns: 1fr;
+  }
+}

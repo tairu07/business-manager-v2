@@ -5,8 +5,7 @@
  * 仮画像は <slot>.placeholder.jpg(.gitignore 済み)。本物の <slot>.jpg が置かれるとそちらを優先する。
  * credit があればフッターの免責の下に「Photo: 作者 / 出典」を出す(仮画像には付けない)。
  */
-export type KabuSalonImageSlot =
-  "okami" | "quote1" | "desk" | "quote2" | "final" | "founder";
+export type KabuSalonImageSlot = "okami" | "quote1" | "desk" | "quote2" | "final";
 
 export type KabuSalonImageCredit = {
   readonly author: string;
@@ -64,12 +63,5 @@ export const kabuSalonImages: ReadonlyArray<KabuSalonImage> = [
     alt: "夜明け前の都市",
     width: 1600,
     height: 900,
-  },
-  {
-    slot: "founder",
-    file: "founder.jpg",
-    alt: "主宰 加藤大成",
-    width: 1200,
-    height: 1600,
   },
 ];

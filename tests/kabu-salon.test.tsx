@@ -93,9 +93,14 @@ describe("株分析サロンLP", () => {
     }
   });
 
-  it("運営者はSENRITSUで、ラクマル愛好会の価格には触れない", () => {
-    render(<KabuSalonPage />);
-    expect(screen.getAllByText(/株式会社SENRITSU/).length).toBeGreaterThan(0);
+  it("本名・社名・主宰写真を出さず、ラクマル愛好会の価格には触れない", () => {
+    const { container } = render(<KabuSalonPage />);
+    const rendered = container.textContent ?? "";
+    for (const word of ["SENRITSU", "戦慄", "加藤", "大成", "Taisei"]) {
+      expect(rendered).not.toContain(word);
+    }
+    expect(container.querySelectorAll(".photo--founder")).toHaveLength(0);
+    expect(rendered).toContain("タイちゃん");
     const all = collectStrings(kabuSalonCopy).join("\n");
     expect(all).not.toContain("ラクマル");
     expect(all).not.toContain("9,000");
@@ -134,7 +139,6 @@ describe("株分析サロンLP", () => {
     const c = withPhotos.container;
     expect(c.querySelectorAll(".photo--okami img")).toHaveLength(1);
     expect(c.querySelectorAll(".photo--desk img")).toHaveLength(1);
-    expect(c.querySelectorAll(".photo--founder img")).toHaveLength(1);
     // okami は .okami グリッド直下の子(grid-column を効かせるため)
     expect(c.querySelector(".okami > .photo--okami")).not.toBeNull();
     expect(c.querySelectorAll(".quote-band--photo")).toHaveLength(2);

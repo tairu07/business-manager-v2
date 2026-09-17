@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const FONTS_HREF =
   "https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap";
 
-const { pricing, ladder, operator, urls, name } = kabuSalonConfig;
+const { pricing, operator, urls, name } = kabuSalonConfig;
 
 /** 【 】付きの値は未設定のプレースホルダー(公開前に config で置換する) */
 function isPlaceholder(value: string): boolean {
@@ -85,38 +85,6 @@ function BreakAfter({
       {text.slice(0, cut)}
       {mobileOnly ? <br className="br-sm" /> : <br />}
       {text.slice(cut)}
-    </>
-  );
-}
-
-/** ヒーローの見出し: 「まず負けない」を金にし、読点で改行する(モバイルは閉じ括弧の後でも改行) */
-function Headline({ text }: { text: string }) {
-  const key = "まず負けない";
-  const at = text.indexOf(key);
-  if (at < 0) return <>{text}</>;
-  const before = text.slice(0, at);
-  const rest = text.slice(at + key.length);
-  const comma = rest.indexOf("、");
-  const restHead = comma >= 0 ? rest.slice(0, comma + 1) : rest;
-  const restTail = comma >= 0 ? rest.slice(comma + 1) : "";
-  return (
-    <>
-      {before}
-      <span className="gold">{key}</span>
-      {restHead.startsWith("」") ? (
-        <>
-          」<br className="br-sm" />
-          {restHead.slice(1)}
-        </>
-      ) : (
-        restHead
-      )}
-      {restTail ? (
-        <>
-          <br />
-          {restTail}。
-        </>
-      ) : null}
     </>
   );
 }
@@ -219,13 +187,10 @@ const KS_SCRIPT = [
  * 株分析サロンのランディングページ。
  * 文言は src/content/kabuSalon.ts、価格・URLは src/config/kabuSalon.ts に集約。
  * デザインは依頼主の参照LP(投資分析レポートサロン)の言語をそのまま移植している。
+ * 本名・社名・主宰写真は出さない(運営者情報は特商法ページ側)。
  */
 export default function KabuSalonPage() {
-  const salonTier = copy.ladder.tiers[1];
-  const noteTier = copy.ladder.tiers[0];
-  const irTier = copy.ladder.tiers[2];
-  // ヒーロー本文の2文目を読点で分け、語の途中で折り返さないようにする
-  const leadParts = copy.hero.lead[1].split("、");
+  const [heroFirst, heroSecond] = copy.hero.heading;
   const [finalFirst, finalSecond] = copy.final.heading;
   // 写真はファイルの有無で出し分ける(無ければ写真なしのレイアウトのまま)
   const photos = {
@@ -234,7 +199,6 @@ export default function KabuSalonPage() {
     desk: resolvePhoto("desk"),
     quote2: resolvePhoto("quote2"),
     final: resolvePhoto("final"),
-    founder: resolvePhoto("founder"),
   };
 
   return (
@@ -248,17 +212,17 @@ export default function KabuSalonPage() {
         <a className="nav__brand" href="#top" aria-label="トップへ">
           <span className="nav__mark" aria-hidden="true" />
           <span className="nav__name">{name}</span>
-          <span className="nav__name-en">Stock Analysis Salon</span>
+          <span className="nav__name-en">{operator.handle}</span>
         </a>
         <div className="nav__links">
-          <a className="nav__link" href="#method">
-            分析の軸
+          <a className="nav__link" href="#why">
+            なぜ作ったか
           </a>
           <a className="nav__link" href="#values">
-            提供価値
+            内容
           </a>
-          <a className="nav__link" href="#founder">
-            主宰
+          <a className="nav__link" href="#method">
+            分析の型
           </a>
           <a className="nav__link" href="#pricing">
             料金
@@ -275,22 +239,17 @@ export default function KabuSalonPage() {
         <div className="hero__inner">
           <div className="hero__badge">
             <span className="hero__badge-dot" aria-hidden="true" />
-            <span className="hero__badge-text">
-              MEMBERSHIP — 先着{pricing.earlyBirdSeats}名 先行価格
-            </span>
+            <span className="hero__badge-text">{copy.hero.badge}</span>
           </div>
           <h1 className="hero__title">
-            <Headline text={copy.hero.heading} />
+            <Gold text={heroFirst} keyword={copy.hero.gold} />
+            <br />
+            {heroSecond}
           </h1>
           <p className="hero__sub">
             {copy.hero.lead[0]}
-            {leadParts.map((part, i) => (
-              <Fragment key={i}>
-                {i === leadParts.length - 1 ? <br className="br-sm" /> : <br />}
-                {part}
-                {i < leadParts.length - 1 ? "、" : ""}
-              </Fragment>
-            ))}
+            <br />
+            <BreakAfter text={copy.hero.lead[1]} at="、" mobileOnly />
           </p>
           <p className="hero__note">
             <Sentences text={copy.hero.priceLine} />
@@ -299,8 +258,8 @@ export default function KabuSalonPage() {
             <a className="btn btn--primary" href={urls.apply} id="cta-hero">
               {copy.hero.cta}
             </a>
-            <a className="btn btn--ghost" href="#philosophy">
-              分析の軸を読む
+            <a className="btn btn--ghost" href="#why">
+              {copy.hero.ctaSecondary}
             </a>
           </div>
         </div>
@@ -311,10 +270,116 @@ export default function KabuSalonPage() {
       </header>
 
       <main>
-        {/* Philosophy — まず、負けない */}
-        <section className="section" id="philosophy">
+        {/* Why — なぜ作ったか */}
+        <section className="section" id="why">
           <div className="container">
-            <Eyebrow en="Philosophy" jp="まず、負けない" />
+            <Eyebrow en={copy.why.en} jp={copy.why.jp} />
+            <h2 className="h2 reveal">
+              {copy.why.heading[0]}
+              <br />
+              <Gold text={copy.why.heading[1]} keyword="続かない" />
+            </h2>
+            <div className="okami">
+              <div className="reveal">
+                <p className="okami__quote">
+                  {copy.why.quote.map((line, i) => (
+                    <Fragment key={i}>
+                      {i > 0 && <br />}
+                      {line}
+                    </Fragment>
+                  ))}
+                </p>
+              </div>
+              <div className="okami__body reveal">
+                {copy.why.paragraphs.map((segments, i) => (
+                  <Paragraph segments={segments} key={i} />
+                ))}
+              </div>
+              {/* 2カラムの下に全幅の横長帯として置く(グリッド直下の子でないと grid-column が効かない) */}
+              <Photo photo={photos.okami} variant="okami" className="reveal" />
+            </div>
+          </div>
+        </section>
+
+        {/* Honestly — 正直な位置づけ */}
+        <section className="section section--alt" id="honest">
+          <div className="container">
+            <Eyebrow en={copy.honest.en} jp={copy.honest.jp} />
+            <h2 className="h2 reveal">
+              {copy.honest.heading[0]}
+              <br className="br-sm" />
+              {copy.honest.heading[1]}
+            </h2>
+            <div className="values" style={{ marginTop: 64 }}>
+              {copy.honest.items.map((item, i) => (
+                <div className="reveal" key={item.title}>
+                  <div className="value__head">
+                    <span className="value__index">{ROMAN[i]}</span>
+                    <h3 className="value__title">{item.title}</h3>
+                  </div>
+                  <p className="value__desc">{item.body}</p>
+                </div>
+              ))}
+            </div>
+            <div className="fit reveal" style={{ marginTop: 72 }}>
+              <div className="fit__col fit__col--yes">
+                <div className="fit__head">
+                  <span className="fit__head-mark">For You</span>
+                  {copy.forWhom.heading}
+                </div>
+                <ul className="fit__list">
+                  {copy.forWhom.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="fit__col fit__col--no">
+                <div className="fit__head">
+                  <span className="fit__head-mark">Not For</span>
+                  {copy.forWhom.notHeading}
+                </div>
+                <ul className="fit__list">
+                  {copy.forWhom.notItems.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 引用帯 */}
+        <QuoteBand quote={copy.quotes[0]} photo={photos.quote1} />
+
+        {/* What You Get — 内容 */}
+        <section className="section" id="values">
+          <div className="container">
+            <Eyebrow en={copy.offer.en} jp={copy.offer.heading} />
+            <h2 className="h2 reveal">
+              週1回の<span className="gold">Zoom</span>は、
+              <br className="br-sm" />
+              約束します。
+            </h2>
+            <p className="lead reveal">{copy.offer.lead}</p>
+            <div className="values values--five" style={{ marginTop: 56 }}>
+              {copy.offer.items.map((item, i) => (
+                <div className="reveal" key={item.title}>
+                  <div className="value__head">
+                    <span className="value__index">{ROMAN[i]}</span>
+                    <h3 className="value__title">{item.title}</h3>
+                  </div>
+                  <p className="value__desc">{item.body}</p>
+                </div>
+              ))}
+            </div>
+            <p className="values-note reveal">※ {copy.disclaimer.items[1]}</p>
+          </div>
+        </section>
+
+        {/* Philosophy — まず、負けない */}
+        <section className="section section--alt" id="philosophy">
+          <div className="container">
+            <Eyebrow en={copy.philosophy.en} jp={copy.philosophy.jp} />
             <div className="okami">
               <div className="reveal">
                 <p className="okami__quote">
@@ -331,20 +396,16 @@ export default function KabuSalonPage() {
                 </div>
               </div>
               <div className="okami__body reveal">
-                {copy.philosophy.story.paragraphs.slice(0, 2).map((segments, i) => (
+                {copy.philosophy.story.paragraphs.map((segments, i) => (
                   <Paragraph segments={segments} key={i} />
                 ))}
-                <p>{copy.operator.paragraphs[1]}</p>
-                <Paragraph segments={copy.philosophy.story.paragraphs[2]} />
               </div>
-              {/* 2カラムの下に全幅の横長帯として置く(グリッド直下の子でないと grid-column が効かない) */}
-              <Photo photo={photos.okami} variant="okami" className="reveal" />
             </div>
           </div>
         </section>
 
         {/* Method — 分析の軸は3つ */}
-        <section className="section section--alt" id="method">
+        <section className="section" id="method">
           <div className="container">
             <Eyebrow en="Method" jp="分析の軸" />
             <h2 className="h2 reveal">
@@ -376,54 +437,10 @@ export default function KabuSalonPage() {
           </div>
         </section>
 
-        {/* 引用帯 */}
-        <QuoteBand quote={copy.quotes[0]} photo={photos.quote1} />
-
-        {/* Four Precepts — 四訓 */}
-        <section className="section section--tight" id="precepts">
-          <div className="container">
-            <Eyebrow en="Four Precepts" jp="行動指針" />
-            <h2 className="h2 reveal">{copy.precepts.heading}</h2>
-            <div className="precepts reveal">
-              {copy.precepts.items.map((p, i) => (
-                <div className="precept" key={p.title}>
-                  <div className="precept__num">{KANJI[i]}</div>
-                  <h3 className="precept__title">{p.title}</h3>
-                  <p className="precept__desc">{p.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* What You Get — 提供価値 */}
-        <section className="section section--alt" id="values">
-          <div className="container">
-            <Eyebrow en="What You Get" jp={copy.offer.heading} />
-            <h2 className="h2 reveal">
-              銘柄ではなく、
-              <br className="br-sm" />
-              <span className="gold">プロセス</span>を渡す。
-            </h2>
-            <div className="values values--five">
-              {copy.offer.items.map((item, i) => (
-                <div className="reveal" key={item.title}>
-                  <div className="value__head">
-                    <span className="value__index">{ROMAN[i]}</span>
-                    <h3 className="value__title">{item.title}</h3>
-                  </div>
-                  <p className="value__desc">{item.body}</p>
-                </div>
-              ))}
-            </div>
-            <p className="values-note reveal">※ {copy.disclaimer.items[1]}</p>
-          </div>
-        </section>
-
         {/* Process — 分析の中身 */}
-        <section className="section" id="process">
+        <section className="section section--alt" id="process">
           <div className="container">
-            <Eyebrow en="Process" jp={copy.method.heading} />
+            <Eyebrow en={copy.method.en} jp={copy.method.heading} />
             <div
               className={
                 photos.desk ? "process__head process__head--photo" : "process__head"
@@ -432,7 +449,7 @@ export default function KabuSalonPage() {
               <h2 className="h2 reveal">
                 抽象論ではなく、
                 <br className="br-sm" />
-                <span className="gold">毎週これ</span>を回す。
+                <span className="gold">配信でこれ</span>を回す。
               </h2>
               <Photo photo={photos.desk} variant="desk" className="reveal" />
             </div>
@@ -450,106 +467,64 @@ export default function KabuSalonPage() {
           </div>
         </section>
 
-        {/* 引用帯 */}
-        <QuoteBand quote={copy.quotes[1]} alt photo={photos.quote2} />
-
-        {/* For You — or Not */}
-        <section className="section" id="fit">
+        {/* Four Precepts — 四訓 */}
+        <section className="section" id="precepts">
           <div className="container">
-            <Eyebrow en="For You — or Not" jp="向き、不向き" />
-            <h2 className="h2 reveal">
-              正直に言います。
-              <br />
-              全員には、向いていません。
-            </h2>
-            <div className="fit reveal">
-              <div className="fit__col fit__col--yes">
-                <div className="fit__head">
-                  <span className="fit__head-mark">For You</span>
-                  {copy.forWhom.heading}
+            <Eyebrow en="Four Precepts" jp="行動指針" />
+            <h2 className="h2 reveal">{copy.precepts.heading}</h2>
+            <div className="precepts reveal">
+              {copy.precepts.items.map((p, i) => (
+                <div className="precept" key={p.title}>
+                  <div className="precept__num">{KANJI[i]}</div>
+                  <h3 className="precept__title">{p.title}</h3>
+                  <p className="precept__desc">{p.body}</p>
                 </div>
-                <ul className="fit__list">
-                  {copy.forWhom.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="fit__col fit__col--no">
-                <div className="fit__head">
-                  <span className="fit__head-mark">Not For</span>
-                  {copy.forWhom.notHeading}
-                </div>
-                <ul className="fit__list">
-                  {copy.forWhom.notItems.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Founder — 主宰 */}
-        <section className="section section--alt" id="founder">
+        {/* 引用帯 */}
+        <QuoteBand quote={copy.quotes[1]} alt photo={photos.quote2} />
+
+        {/* Passport — ファンのパスポート */}
+        <section className="section" id="passport">
           <div className="container">
-            <Eyebrow en="Founder" jp="運営者・主宰" />
-            <div className="founder">
-              <div className="founder__aside reveal">
-                <div className="founder__role">代表・主宰</div>
-                <h2 className="founder__name">{operator.displayName}</h2>
-                <div className="founder__name-en">Taisei — SENRITSU Inc.</div>
-                <Photo photo={photos.founder} variant="founder" />
-              </div>
-              <div className="reveal">
-                <div className="founder__bio">
-                  {copy.operator.bio.map((segments, i) => (
-                    <Paragraph segments={segments} key={i} />
-                  ))}
+            <Eyebrow en={copy.passport.en} jp={copy.passport.jp} />
+            <h2 className="h2 reveal">
+              {copy.passport.heading[0]}
+              <br />
+              <Gold text={copy.passport.heading[1]} keyword="パスポート" />
+            </h2>
+            <p className="lead reveal">{copy.passport.lead}</p>
+            <div className="precepts precepts--three reveal" style={{ marginTop: 56 }}>
+              {copy.passport.items.map((item, i) => (
+                <div className="precept" key={item.title}>
+                  <div className="precept__num precept__num--latin" aria-hidden="true">
+                    {ROMAN[i]}
+                  </div>
+                  <h3 className="precept__title">{item.title}</h3>
+                  <p className="precept__desc">{item.body}</p>
                 </div>
-                <p className="founder__note">{copy.operator.paragraphs[2]}</p>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* Membership — 料金 */}
-        <section className="section" id="pricing">
+        <section className="section section--alt" id="pricing">
           <div className="container">
-            <Eyebrow en="Membership" jp={copy.ladder.heading} center />
+            <Eyebrow en={copy.pricing.en} jp={copy.pricing.heading} center />
             <h2 className="h2 h2--center reveal">
-              銘柄ではなく、
+              責任と締切を、
               <br className="br-sm" />
-              <span className="gold">プロセス</span>に払う。
+              <span className="gold">買って</span>もらう値段。
             </h2>
-            <p className="lead lead--center reveal">{copy.ladder.lead}</p>
-            <div className="pricing">
-              {/* note */}
-              <div className="plan reveal">
-                <div className="plan__stage">First</div>
-                <div className="plan__name">{noteTier.name}</div>
-                <div className="plan__name-en">Weekly Note</div>
-                <div className="plan__price">
-                  <span className="plan__amount">{yen(ladder.notePrice)}</span>
-                  <small>/ 月{ladder.noteTaxIncluded ? "(税込)" : "(税抜)"}</small>
-                </div>
-                <div className="plan__tax">
-                  {ladder.noteTaxIncluded
-                    ? "初月無料"
-                    : `税込 ${yen(withTax(ladder.notePrice))}・初月無料`}
-                </div>
-                <div className="plan__limit">週1回の読み物</div>
-                <p className="plan__desc">{noteTier.body}</p>
-                <a className="btn btn--ghost" href={urls.note}>
-                  noteを読む
-                </a>
-              </div>
-
-              {/* サロン(主役) */}
+            <div className="pricing pricing--single">
               <div className="plan plan--featured reveal">
                 <span className="plan__tag">先着{pricing.earlyBirdSeats}名 先行価格</span>
-                <div className="plan__stage">Second</div>
-                <div className="plan__name">{salonTier.name}</div>
-                <div className="plan__name-en">Stock Analysis Salon</div>
+                <div className="plan__name">{name}</div>
+                <div className="plan__name-en">{operator.handle}</div>
                 <div className="plan__price">
                   <span className="plan__amount">{yen(pricing.earlyBird)}</span>
                   <small>/ 月(税抜)</small>
@@ -566,27 +541,11 @@ export default function KabuSalonPage() {
                   {copy.offer.items.map((item) => (
                     <li key={item.title}>{item.title}</li>
                   ))}
+                  <li>今後のサロン・ツールの会員割引</li>
                 </ul>
                 <a className="btn btn--primary" href={urls.apply} id="cta-pricing">
                   {copy.pricing.cta}
                 </a>
-              </div>
-
-              {/* IRアルファデータベース */}
-              <div className="plan reveal">
-                <div className="plan__stage">Third</div>
-                <div className="plan__name">IRアルファデータベース</div>
-                <div className="plan__name-en">IR Alpha Database — in development</div>
-                <div className="plan__price">
-                  <span className="plan__amount">{yen(ladder.irAlphaPrice)}</span>
-                  <small>/ 月(税抜・予定)</small>
-                </div>
-                <div className="plan__tax">
-                  税込 {yen(withTax(ladder.irAlphaPrice))} 予定・開発中
-                </div>
-                <div className="plan__limit">毎月1回の個別面談つき</div>
-                <p className="plan__desc">{irTier.body}</p>
-                <span className="btn btn--static">サロン生に先行案内</span>
               </div>
             </div>
             <div className="pricing-note reveal">
@@ -597,7 +556,7 @@ export default function KabuSalonPage() {
         </section>
 
         {/* Flow — 参加までの流れ */}
-        <section className="section section--alt" id="flow">
+        <section className="section" id="flow">
           <div className="container">
             <Eyebrow en="Flow" jp={copy.flow.heading} />
             <h2 className="h2 reveal">申込から、参加まで。</h2>
@@ -615,7 +574,7 @@ export default function KabuSalonPage() {
         </section>
 
         {/* FAQ */}
-        <section className="section" id="faq">
+        <section className="section section--alt" id="faq">
           <div className="container">
             <Eyebrow en="FAQ" jp={copy.faq.heading} />
             <h2 className="h2 reveal">
@@ -645,14 +604,14 @@ export default function KabuSalonPage() {
         >
           <div className="final__inner reveal">
             <h2 className="final__title">
-              {finalFirst}
+              <Gold text={finalFirst} keyword={copy.final.gold} />
               <br />
-              <Gold text={finalSecond} keyword="まず負けない" breakAfter="、" />
+              {finalSecond}
             </h2>
             <p className="final__sub">
               <Sentences text={copy.hero.priceLine} />
               <br />
-              {copy.offer.items[4].body}
+              {copy.honest.items[2].body}
             </p>
             <a className="btn btn--primary" href={urls.apply} id="cta-final">
               {copy.pricing.cta}
@@ -669,7 +628,7 @@ export default function KabuSalonPage() {
             <div>
               <div className="footer__brand">{name}</div>
               <div className="footer__company">
-                {copy.footer.operatorLabel}：{operator.legalName}
+                {copy.footer.operatorNote}
                 {isPlaceholder(operator.contact) ? null : (
                   <>
                     <br />
@@ -694,7 +653,7 @@ export default function KabuSalonPage() {
             ))}
           </div>
           <PhotoCredits photos={Object.values(photos)} />
-          <div className="copyright">© 2026 SENRITSU Inc. All rights reserved.</div>
+          <div className="copyright">{copy.footer.copyright}</div>
         </div>
       </footer>
 

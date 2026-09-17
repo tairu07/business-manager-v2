@@ -22,3 +22,5 @@
 - ハマり: PlaywrightのChromiumはプロキシCAを信用せずGoogle Fontsが落ちる → launch args ["--ignore-certificate-errors"] で解決。proxy オプションを明示するとlocalhostまでプロキシ経由になり白紙になるので指定しない
 - 2026/09/17 写真: この環境は画像ホスト(Unsplash/Pexels/photo-ac等)へ接続不可。大成のPCのCoworkに「photo-acで探して public/kabu-salon/img/<slot>.jpg にコミット・プッシュ」を依頼する手順が成立した(写真5枚が commit 026e4f2 で到着)。photo-acは帰属表示不要
 - ハマり: Playwright の fullPage 撮影では画面外の filter 付き <img> が空に写ることがある(実ページは正常)。撮影前に decoding="sync" + img.decode() を待つ
+- 2026/09/17 大成の呼び名: LP・対外では「タイちゃん」(一人称はタイル/タイちゃん)。通り名は音声から「タイルドマン・サックス」と推定(要確認)。本名・SENRITSU・主宰写真はLPに出さない
+- 意思決定: 株分析サロンは「まず負けない」教育型から「タイちゃんの思考を聞くファンクラブ」型へ転換(09/17)。理由: 7〜8月の毎日スペースで分析時間が増え銘柄が見つかった(シリウスビジョン 290〜300円→420〜450円)が、お金をもらって責任がないと続かない。週1回Zoom(目標週2)、10〜20人、今後のガチサロン・ツールは会員割引
