@@ -18,3 +18,5 @@
 - ハマり: Plaud MCPはタイトル検索のみ。コーチ名は録音タイトルに出ないため要約(get_note)で特定した。「規格外さん」は未特定
 - 大成の好み: サロンは大成主導・那須野/麦田サポート。noteは「待ってくれている一人のために書く」トーン
 - 宿題: 申込URL(UnivaPay)・特商法・プライバシーポリシー・問い合わせ先のプレースホルダー置換。サロン正式名称。「規格外さん」の録音特定
+- 2026/09/17 追記: 大成は「昔作ったちゃんとしたやつ」= 投資分析レポートサロンLP(墨#0B0D13/紺/生成り#EDE6D6/金#C9A86A、Shippori Mincho+Zen Kaku Gothic New+Cormorant Garamond italic、縦書き引用帯、朱印「不敗」、四訓)を高級感の基準にしている。SENRITSU系LPはこのデザイン言語を踏襲する。参照HTMLはアーティファクト 7wvCzg4NhDLYUvoecXrodn
+- ハマり: PlaywrightのChromiumはプロキシCAを信用せずGoogle Fontsが落ちる → launch args ["--ignore-certificate-errors"] で解決。proxy オプションを明示するとlocalhostまでプロキシ経由になり白紙になるので指定しない

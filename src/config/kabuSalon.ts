@@ -31,10 +31,15 @@ export const kabuSalonConfig = {
     maxMembers: 30,
   },
 
-  /** 3段階ラインナップのうちサロン以外の価格(税抜・月額) */
+  /** 3段階ラインナップのうちサロン以外の価格(月額) */
   ladder: {
+    /**
+     * noteの月額。note.com の有料マガジンは販売価格を税込で設定するため税込額として扱う。
+     * 実際の課金額と一致しているか公開前に要確認(税抜設定なら noteTaxIncluded を false に)
+     */
     notePrice: 4980,
-    /** IRアルファデータベース(開発中)の予定価格 */
+    noteTaxIncluded: true,
+    /** IRアルファデータベース(開発中)の予定価格(税抜) */
     irAlphaPrice: 50000,
   },
 

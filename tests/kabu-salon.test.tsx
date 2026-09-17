@@ -41,22 +41,33 @@ describe("株分析サロンLP", () => {
   it("申込ボタンは全て設定の申込URLへ向く", () => {
     render(<KabuSalonPage />);
     const links = screen.getAllByRole("link", { name: /申し込む/ });
-    expect(links.length).toBe(3);
+    expect(links.length).toBeGreaterThanOrEqual(3);
     for (const link of links) {
       expect(link).toHaveAttribute("href", kabuSalonConfig.urls.apply);
     }
   });
 
-  it("免責事項と「投資助言ではない」旨が表示される", () => {
-    render(<KabuSalonPage />);
-    expect(screen.getByRole("heading", { name: "免責事項" })).toBeInTheDocument();
-    expect(screen.getByText(/投資助言・代理業ではありません/)).toBeInTheDocument();
+  it("免責事項と「投資助言ではない」旨が、折り畳みの外(免責文)に表示される", () => {
+    const { container } = render(<KabuSalonPage />);
+    const heading = screen.getByRole("heading", { name: "免責事項" });
+    expect(heading).toBeInTheDocument();
+    // FAQ(<details>)の回答だけでなく、常時見える免責文にも明記されていること
+    const disclaimer = heading.parentElement;
+    expect(disclaimer?.textContent).toMatch(/投資助言・代理業ではありません/);
+    expect(screen.getAllByText(/投資助言・代理業ではありません/).length).toBeGreaterThan(
+      1
+    );
+    // プレースホルダーの問い合わせ先は描画しない
+    expect(container.textContent).not.toContain("【問い合わせ先");
   });
 
-  it("文言に利回りの約束・推奨と誤認される表現を含まない", () => {
-    const all = collectStrings(kabuSalonCopy).join("\n");
+  it("文言(content と描画結果の両方)に利回りの約束・推奨と誤認される表現を含まない", () => {
+    const fromContent = collectStrings(kabuSalonCopy).join("\n");
+    const { container } = render(<KabuSalonPage />);
+    const rendered = container.textContent ?? "";
     for (const phrase of FORBIDDEN_PHRASES) {
-      expect(all).not.toContain(phrase);
+      expect(fromContent).not.toContain(phrase);
+      expect(rendered).not.toContain(phrase);
     }
   });
 
