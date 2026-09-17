@@ -587,6 +587,17 @@ body:has(.ks) {
   align-self: flex-end;
   padding-bottom: 8px;
 }
+/* 背景写真つき(--photo は page 側で style として渡す)。写真の上に墨のグラデを重ねて沈める。
+   罫線は写真の有無で変えない(--alt 側で決める)。最後の色は帯の元色(quote1 は --ink、--alt は --ink-2) */
+.ks .quote-band--photo {
+  background:
+    linear-gradient(rgba(11, 13, 19, 0.82), rgba(11, 13, 19, 0.92)),
+    var(--photo) center / cover no-repeat,
+    var(--ink);
+}
+.ks .quote-band--alt.quote-band--photo {
+  background-color: var(--ink-2);
+}
 @media (max-width: 600px) {
   .ks .quote-band {
     padding: 80px 24px;
@@ -594,11 +605,98 @@ body:has(.ks) {
   }
 }
 
+/* ---------- 写真枠(金罫フレーム+墨のビネット。角丸・影なし) ---------- */
+.ks .photo {
+  display: block;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--gold-line);
+  background: var(--ink-3);
+}
+.ks .photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 明るい素材・彩度の高い素材でも文字組の奥に沈むよう、彩度と明度を落とす */
+  filter: grayscale(0.3) saturate(0.8) brightness(0.72) contrast(1.05);
+}
+/* 平坦な墨の被せ(.22)を1層 + 内側から始まるビネット。中心が明るい写真(行灯の炎・白い資料)が浮かないようにする */
+.ks .photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(11, 13, 19, 0.22), rgba(11, 13, 19, 0.22)),
+    radial-gradient(
+      ellipse 85% 80% at 50% 45%,
+      transparent 25%,
+      rgba(11, 13, 19, 0.78) 100%
+    );
+}
+/* okami: デスクトップでは2カラムの下に全幅の横長帯(3:1)。文字組より背が低い「沈んだ帯」に留める */
+.ks .photo--okami {
+  grid-column: 1 / -1;
+  aspect-ratio: 3 / 1;
+  margin-top: 64px;
+}
+.ks .photo--okami::after {
+  background:
+    linear-gradient(rgba(11, 13, 19, 0.22), rgba(11, 13, 19, 0.22)),
+    radial-gradient(
+      ellipse 70% 100% at 50% 50%,
+      transparent 35%,
+      rgba(11, 13, 19, 0.78) 100%
+    );
+}
+.ks .photo--desk {
+  aspect-ratio: 16 / 9;
+}
+.ks .photo--desk img {
+  filter: grayscale(0.35) saturate(0.75) brightness(0.66);
+}
+/* founder: 依頼主本人のポートレート。素材写真のような墨の被せは掛けず、参照LPの .founder__photo と同じ薄い金のグラデのみ */
+.ks .photo--founder {
+  aspect-ratio: 3 / 4;
+  margin-top: 4px;
+}
+.ks .photo--founder img {
+  filter: grayscale(0.2) brightness(0.92);
+}
+.ks .photo--founder::after {
+  background:
+    linear-gradient(160deg, rgba(201, 168, 106, 0.06), transparent 60%),
+    radial-gradient(
+      ellipse 90% 90% at 50% 40%,
+      transparent 55%,
+      rgba(11, 13, 19, 0.35) 100%
+    );
+}
+@media (max-width: 860px) {
+  .ks .photo--founder {
+    max-width: 320px;
+  }
+}
+/* okami / desk は、それぞれのグリッドが1カラムに落ちる 800px で横長(16:10)に切り替える(縦長だと画面を占領しすぎる) */
+@media (max-width: 800px) {
+  .ks .photo--okami {
+    aspect-ratio: 16 / 10;
+    margin-top: 0;
+    order: 3; /* 1カラムでは 引用→朱印→本文→写真 の順に */
+  }
+  .ks .photo--desk {
+    aspect-ratio: 16 / 10;
+    max-width: 520px;
+  }
+}
+
 /* ---------- Philosophy(おかみ構造) ---------- */
 .ks .okami {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 0 80px;
   align-items: start;
 }
 .ks .okami__quote {
@@ -647,7 +745,7 @@ body:has(.ks) {
 @media (max-width: 800px) {
   .ks .okami {
     grid-template-columns: 1fr;
-    gap: 44px;
+    gap: 44px 0;
   }
   .ks .okami__quote {
     padding-left: 24px;
@@ -839,6 +937,35 @@ body:has(.ks) {
 }
 
 /* ---------- 分析の中身(番号付きの罫線リスト) ---------- */
+/* 見出しの右に控えめな横長写真。写真が無ければ見出しだけ(現状レイアウト) */
+.ks .process__head--photo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 32px 56px;
+  align-items: end;
+  margin-bottom: 48px;
+}
+.ks .process__head--photo .h2 {
+  margin-bottom: 0;
+}
+/* h2(line-height 1.8)の下側ハーフレディング分を吸収し、「す。」の字面下端と写真下端を揃える */
+.ks .process__head--photo .photo--desk {
+  margin-bottom: calc(0.4 * clamp(1.7rem, 3.6vw, 2.5rem));
+}
+/* 写真の隣では見出し幅が狭まるので、読点で常に改行し「す。」だけが落ちる折り返しを防ぐ */
+.ks .process__head--photo .h2 .br-sm {
+  display: inline;
+}
+@media (max-width: 800px) {
+  .ks .process__head--photo {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    margin-bottom: 44px;
+  }
+  .ks .process__head--photo .photo--desk {
+    margin-bottom: 0;
+  }
+}
 .ks .steps {
   border-top: 1px solid var(--gold-line);
 }
@@ -1242,6 +1369,28 @@ body:has(.ks) {
     radial-gradient(ellipse 60% 50% at 50% 100%, rgba(201, 168, 106, 0.07), transparent),
     var(--ink);
 }
+/* 背景写真つき: 墨の被せ(.9)で沈めた写真の上に、金の放射だけ ::before で戻す */
+.ks .final--photo {
+  background:
+    linear-gradient(rgba(11, 13, 19, 0.9), rgba(11, 13, 19, 0.9)),
+    var(--photo) center / cover no-repeat,
+    var(--ink);
+}
+.ks .final--photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 100%,
+    rgba(201, 168, 106, 0.07),
+    transparent
+  );
+}
+.ks .final__inner {
+  position: relative;
+  z-index: 1;
+}
 .ks .final__title {
   font-family: var(--serif);
   font-weight: 500;
@@ -1333,6 +1482,22 @@ body:has(.ks) {
 }
 .ks .disclaimer p + p {
   margin-top: 4px;
+}
+.ks .photo-credits {
+  margin-top: 20px;
+  font-family: var(--latin);
+  font-style: italic;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--kinari-faint);
+  line-height: 1.9;
+}
+.ks .photo-credits a {
+  border-bottom: 1px solid rgba(237, 230, 214, 0.18);
+  transition: color 0.3s;
+}
+.ks .photo-credits a:hover {
+  color: var(--gold);
 }
 .ks .copyright {
   margin-top: 28px;

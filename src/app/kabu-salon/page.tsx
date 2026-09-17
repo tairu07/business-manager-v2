@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fragment } from "react";
 import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 import { kabuSalonCopy as copy } from "@/content/kabuSalon";
+import { Photo, PhotoCredits, photoStyle, resolvePhoto } from "./photos";
 import "./kabu-salon.css";
 
 export const metadata: Metadata = {
@@ -148,12 +149,22 @@ function Eyebrow({ en, jp, center }: { en: string; jp: string; center?: boolean 
 function QuoteBand({
   quote,
   alt,
+  photo,
 }: {
   quote: (typeof copy.quotes)[number];
   alt?: boolean;
+  photo?: ReturnType<typeof resolvePhoto>;
 }) {
+  const classes = [
+    "quote-band",
+    alt && "quote-band--alt",
+    photo && "quote-band--photo",
+    "reveal",
+  ]
+    .filter(Boolean)
+    .join(" ");
   return (
-    <div className={alt ? "quote-band quote-band--alt reveal" : "quote-band reveal"}>
+    <div className={classes} style={photoStyle(photo ?? null)}>
       <p className="quote-band__text">
         {quote.text.map((line, i) => (
           <Fragment key={i}>
@@ -216,6 +227,15 @@ export default function KabuSalonPage() {
   // ヒーロー本文の2文目を読点で分け、語の途中で折り返さないようにする
   const leadParts = copy.hero.lead[1].split("、");
   const [finalFirst, finalSecond] = copy.final.heading;
+  // 写真はファイルの有無で出し分ける(無ければ写真なしのレイアウトのまま)
+  const photos = {
+    okami: resolvePhoto("okami"),
+    quote1: resolvePhoto("quote1"),
+    desk: resolvePhoto("desk"),
+    quote2: resolvePhoto("quote2"),
+    final: resolvePhoto("final"),
+    founder: resolvePhoto("founder"),
+  };
 
   return (
     <div className="ks" id="top">
@@ -317,6 +337,8 @@ export default function KabuSalonPage() {
                 <p>{copy.operator.paragraphs[1]}</p>
                 <Paragraph segments={copy.philosophy.story.paragraphs[2]} />
               </div>
+              {/* 2カラムの下に全幅の横長帯として置く(グリッド直下の子でないと grid-column が効かない) */}
+              <Photo photo={photos.okami} variant="okami" className="reveal" />
             </div>
           </div>
         </section>
@@ -355,7 +377,7 @@ export default function KabuSalonPage() {
         </section>
 
         {/* 引用帯 */}
-        <QuoteBand quote={copy.quotes[0]} />
+        <QuoteBand quote={copy.quotes[0]} photo={photos.quote1} />
 
         {/* Four Precepts — 四訓 */}
         <section className="section section--tight" id="precepts">
@@ -402,11 +424,18 @@ export default function KabuSalonPage() {
         <section className="section" id="process">
           <div className="container">
             <Eyebrow en="Process" jp={copy.method.heading} />
-            <h2 className="h2 reveal">
-              抽象論ではなく、
-              <br className="br-sm" />
-              <span className="gold">毎週これ</span>を回す。
-            </h2>
+            <div
+              className={
+                photos.desk ? "process__head process__head--photo" : "process__head"
+              }
+            >
+              <h2 className="h2 reveal">
+                抽象論ではなく、
+                <br className="br-sm" />
+                <span className="gold">毎週これ</span>を回す。
+              </h2>
+              <Photo photo={photos.desk} variant="desk" className="reveal" />
+            </div>
             <ol className="steps reveal">
               {copy.method.items.map((item, i) => (
                 <li className="step" key={item.title}>
@@ -422,7 +451,7 @@ export default function KabuSalonPage() {
         </section>
 
         {/* 引用帯 */}
-        <QuoteBand quote={copy.quotes[1]} alt />
+        <QuoteBand quote={copy.quotes[1]} alt photo={photos.quote2} />
 
         {/* For You — or Not */}
         <section className="section" id="fit">
@@ -469,6 +498,7 @@ export default function KabuSalonPage() {
                 <div className="founder__role">代表・主宰</div>
                 <h2 className="founder__name">{operator.displayName}</h2>
                 <div className="founder__name-en">Taisei — SENRITSU Inc.</div>
+                <Photo photo={photos.founder} variant="founder" />
               </div>
               <div className="reveal">
                 <div className="founder__bio">
@@ -608,8 +638,12 @@ export default function KabuSalonPage() {
         </section>
 
         {/* 最終CTA */}
-        <section className="final" id="join">
-          <div className="reveal">
+        <section
+          className={photos.final ? "final final--photo" : "final"}
+          id="join"
+          style={photoStyle(photos.final)}
+        >
+          <div className="final__inner reveal">
             <h2 className="final__title">
               {finalFirst}
               <br />
@@ -659,6 +693,7 @@ export default function KabuSalonPage() {
               <p key={item}>{item}</p>
             ))}
           </div>
+          <PhotoCredits photos={Object.values(photos)} />
           <div className="copyright">© 2026 SENRITSU Inc. All rights reserved.</div>
         </div>
       </footer>
