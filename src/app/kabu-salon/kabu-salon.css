@@ -1550,3 +1550,112 @@ body:has(.ks) {
     grid-template-columns: 1fr;
   }
 }
+
+/* ───────── 法務ページ(特商法・プライバシーポリシー・利用規約) ───────── */
+.ks .nav--static {
+  position: static;
+  border-bottom-color: var(--gold-line);
+  background: var(--ink);
+}
+.ks .legal {
+  padding-top: 72px;
+}
+.ks .legal__container {
+  max-width: 880px;
+}
+.ks .legal__title {
+  margin-bottom: 12px;
+}
+.ks .legal__updated {
+  font-family: var(--latin);
+  font-style: italic;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: var(--kinari-faint);
+  margin-bottom: 48px;
+}
+.ks .legal__intro {
+  font-size: 0.95rem;
+  color: var(--kinari-dim);
+  margin-bottom: 40px;
+}
+.ks .legal__table {
+  margin: 0;
+  border-top: 1px solid var(--gold-line);
+}
+.ks .legal__row {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 12px 32px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--gold-line);
+}
+.ks .legal__label {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 0.88rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  line-height: 1.9;
+}
+.ks .legal__value {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+}
+.ks .legal__value p + p {
+  margin-top: 6px;
+}
+.ks .legal__section {
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(237, 230, 214, 0.06);
+  font-size: 0.92rem;
+}
+.ks .legal__section:last-of-type {
+  border-bottom: 0;
+}
+.ks .legal__h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  color: var(--kinari);
+  margin-bottom: 14px;
+}
+.ks .legal__section p + p,
+.ks .legal__section p + .legal__list {
+  margin-top: 10px;
+}
+.ks .legal__list {
+  padding-left: 1.4em;
+  list-style: disc;
+}
+.ks .legal__list--ordered {
+  list-style: decimal;
+}
+.ks .legal__list li {
+  padding-left: 0.2em;
+}
+.ks .legal__list li::marker {
+  color: var(--gold-dark);
+}
+.ks .legal__list li + li {
+  margin-top: 6px;
+}
+.ks .legal__footer {
+  margin-top: 48px;
+}
+@media (max-width: 640px) {
+  .ks .legal {
+    padding-top: 48px;
+  }
+  .ks .legal__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 18px 0;
+  }
+  .ks .legal__label {
+    font-size: 0.8rem;
+  }
+}

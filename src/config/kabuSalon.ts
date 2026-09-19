@@ -37,15 +37,37 @@ export const kabuSalonConfig = {
     goalPerWeek: 2,
   },
 
+  /**
+   * 運営会社(特定商取引法に基づく表記・プライバシーポリシー・利用規約にのみ表示する)。
+   * LP本文には出さない(本名・社名を出さない方針)。
+   */
+  company: {
+    legalName: "株式会社SENRITSU",
+    representative: "代表取締役 加藤大成",
+    postalCode: "579-8036",
+    address: "大阪府東大阪市鷹殿町11-2 カワショウビル2・3階",
+    tel: "090-8791-8955",
+    telNote: "受付時間 平日 10:00〜18:00(お問い合わせはメールを優先してください)",
+    email: "senritsu@senritsu.site",
+    /** 決済代行会社 */
+    paymentProvider: "UnivaPay(ユニヴァ・ペイキャスト)",
+    /** 法務文書の最終更新日(YYYY/MM/DD) */
+    legalUpdatedAt: "2026/09/19",
+  },
+
   urls: {
     /** 申込(決済)ページ。UnivaPayの決済リンクを設定する */
     apply: "【申込・決済ページURL】",
     /** X(旧Twitter)のプロフィール。スペースの実績に触れるため */
     x: "【X プロフィールURL】",
-    /** プライバシーポリシー */
-    privacyPolicy: "【プライバシーポリシーURL】",
-    /** 特定商取引法に基づく表記(運営者情報はここに記載) */
-    tokushoho: "【特商法表記URL】",
+    /** プライバシーポリシー(サイト内ページ) */
+    privacyPolicy: "/kabu-salon/privacy",
+    /** 特定商取引法に基づく表記(運営者情報はここに記載。サイト内ページ) */
+    tokushoho: "/kabu-salon/tokushoho",
+    /** 利用規約(サイト内ページ) */
+    terms: "/kabu-salon/terms",
+    /** LP本体 */
+    lp: "/kabu-salon",
   },
 } as const;
 

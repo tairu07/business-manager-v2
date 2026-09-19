@@ -268,7 +268,7 @@ export const kabuSalonCopy = {
     early: `月額 ${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})`,
     notes: [
       "先行価格は、在籍している限り値上げしません。",
-      "月単位の自動更新。解約はDiscord内の運営宛メッセージで、いつでもできます。",
+      "月単位の自動更新。解約はDiscord内の運営宛メッセージで、いつでもできます(次回決済日の前日まで)。",
       "決済はクレジットカード。決済完了後、自動返信メールでDiscord招待リンクをお送りします。",
     ],
     cta: "先行価格で申し込む",
@@ -306,7 +306,7 @@ export const kabuSalonCopy = {
       },
       {
         q: "解約はいつでもできますか?",
-        a: "できます。Discord内の運営宛メッセージで連絡いただければ、次回更新日以降の課金を止めます。",
+        a: "できます。Discord内の運営宛メッセージで、次回決済日の前日までに連絡いただければ、次回以降の課金を止めます。お支払い済みの期間の末日まではそのまま参加できます。",
       },
       {
         q: "投資助言サービスですか?",
@@ -333,6 +333,7 @@ export const kabuSalonCopy = {
   footer: {
     privacyPolicy: "プライバシーポリシー",
     tokushoho: "特定商取引法に基づく表記",
+    terms: "利用規約",
     contact: "お問い合わせ",
     operatorNote: "運営者情報は「特定商取引法に基づく表記」に記載しています。",
     copyright: `© 2026 ${name}`,

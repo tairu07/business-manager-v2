@@ -644,6 +644,9 @@ export default function KabuSalonPage() {
               <a className="footer__link" href={urls.privacyPolicy}>
                 {copy.footer.privacyPolicy}
               </a>
+              <a className="footer__link" href={urls.terms}>
+                {copy.footer.terms}
+              </a>
             </nav>
           </div>
           <div className="disclaimer">

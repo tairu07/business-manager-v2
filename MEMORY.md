@@ -26,3 +26,5 @@
 - 意思決定: 株分析サロンは「まず負けない」教育型から「タイちゃんの思考を聞くファンクラブ」型へ転換(09/17)。理由: 7〜8月の毎日スペースで分析時間が増え銘柄が見つかった(シリウスビジョン 290〜300円→420〜450円)が、お金をもらって責任がないと続かない。週1回Zoom(目標週2)、10〜20人、今後のガチサロン・ツールは会員割引
 - 2026/09/17 デプロイ: Vercel(tairus-projects/business-manager-v2)に Codex が公開。URL https://business-manager-v2.vercel.app/(→/kabu-salon へ転送)。Production Branch = claude/elegant-bohr-5tmb3i、HOME_REDIRECT=/kabu-salon・DEMO_MODE=false 設定済み。このブランチへ push すると自動再デプロイ。この環境からは api.vercel.com も *.vercel.app も遮断なのでデプロイ・実確認は Codex/Cowork に委ねる
 - 分業パターン: 外部サービス操作(画像取得・Vercel)は大成のPC側のCodex/Coworkが担当し、結果をリポジトリ経由またはチャット報告で受け取る
+- 2026/09/19 法務ページ: /kabu-salon/tokushoho・privacy・terms を追加(文面は src/content/kabuSalonLegal.ts、会社情報は config の company)。会社情報はGmailの申込確認メールから取得(〒579-8036 東大阪市鷹殿町11-2 カワショウビル2・3階、090-8791-8955、senritsu@senritsu.site)。電話は携帯番号なので会社回線に替えるかは大成判断
+- 意思決定: 解約条件は「次回決済日の前日までの連絡で次回以降停止、支払済み期間末日まで利用可、返金・日割なし」で LP・特商法・規約を統一
