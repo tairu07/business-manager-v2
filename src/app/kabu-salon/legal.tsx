@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { kabuSalonConfig } from "@/config/kabuSalon";
 import { kabuSalonCopy as copy } from "@/content/kabuSalon";
 import type { LegalDoc } from "@/content/kabuSalonLegal";
-import { kabuSalonLegalDocs } from "@/content/kabuSalonLegal";
+import { legalDocIndex } from "@/content/kabuSalonLegal";
 import "./kabu-salon.css";
 
 const { name, company, urls } = kabuSalonConfig;
@@ -18,12 +18,6 @@ export function legalMetadata(doc: LegalDoc): Metadata {
     robots: { index: true, follow: true },
   };
 }
-
-const NAV_DOCS = [
-  kabuSalonLegalDocs.tokushoho,
-  kabuSalonLegalDocs.privacy,
-  kabuSalonLegalDocs.terms,
-] as const;
 
 /**
  * 法務ページ共通レイアウト。LPと同じ `.ks` の世界観(墨・生成り・金罫)で、
@@ -120,11 +114,13 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
               <a className="footer__link" href={urls.lp}>
                 サロンのページ
               </a>
-              {NAV_DOCS.filter((d) => d.slug !== doc.slug).map((d) => (
-                <a className="footer__link" href={d.path} key={d.slug}>
-                  {d.title}
-                </a>
-              ))}
+              {legalDocIndex
+                .filter((d) => d.slug !== doc.slug)
+                .map((d) => (
+                  <a className="footer__link" href={d.path} key={d.slug}>
+                    {d.title}
+                  </a>
+                ))}
             </nav>
           </div>
           <div className="copyright">{copy.footer.copyright}</div>

@@ -29,6 +29,16 @@ export const kabuSalonConfig = {
     taxRate: 0.1,
     /** 想定人数(10〜20人でよい、という本人の言葉) */
     targetMembers: "10〜20人",
+    /** 課金サイクル(決済システム側の仕様に合わせる。2026/09/27 時点) */
+    billing: {
+      /** 毎月の課金日 */
+      dayOfMonth: 1,
+      /** この日(日本時間の終わり)までの申込は初回0円。以降は「申込時に課金→翌月から毎月1日」 */
+      launchFreeUntil: "2026-09-30",
+      launchFreeUntilLabel: "2026年9月30日",
+      /** 初回0円で申し込んだ人の初回課金日(表示用) */
+      firstChargeDate: "2026年10月1日",
+    },
   },
 
   /** Zoomリアルタイム配信(サロン生限定) */
@@ -70,6 +80,17 @@ export const kabuSalonConfig = {
     lp: "/kabu-salon",
   },
 } as const;
+
+/**
+ * 初回0円のローンチ期間内か(日本時間で launchFreeUntil の 23:59:59 まで)。
+ * ページは1時間ごとに再生成されるので、期日を過ぎれば案内文は自動で消える。
+ */
+export function isLaunchFreePeriod(now: Date = new Date()): boolean {
+  const end = Date.parse(
+    `${kabuSalonConfig.pricing.billing.launchFreeUntil}T23:59:59+09:00`
+  );
+  return now.getTime() <= end;
+}
 
 /** 税込価格(円・整数) */
 export function withTax(price: number): number {

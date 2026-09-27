@@ -1265,6 +1265,9 @@ body:has(.ks) {
   color: var(--kinari-dim);
   line-height: 1.9;
 }
+.ks .pricing-note__launch {
+  color: var(--gold);
+}
 .ks .pricing-note p + p {
   margin-top: 4px;
 }

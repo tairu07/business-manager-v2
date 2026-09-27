@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Fragment } from "react";
-import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
+import { isLaunchFreePeriod, kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 import { kabuSalonCopy as copy } from "@/content/kabuSalon";
 import { Photo, PhotoCredits, photoStyle, resolvePhoto } from "./photos";
 import "./kabu-salon.css";
+
+/** ローンチ期間の案内文を期日後に自動で消すため、1時間ごとに再生成する */
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: { absolute: copy.meta.title },
@@ -549,6 +552,9 @@ export default function KabuSalonPage() {
               </div>
             </div>
             <div className="pricing-note reveal">
+              {isLaunchFreePeriod() ? (
+                <p className="pricing-note__launch">※ {copy.pricing.launchNote}</p>
+              ) : null}
               <p>※ {copy.pricing.notes[1]}</p>
               <p>※ {copy.pricing.notes[2]}</p>
             </div>

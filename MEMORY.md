@@ -28,3 +28,5 @@
 - 分業パターン: 外部サービス操作(画像取得・Vercel)は大成のPC側のCodex/Coworkが担当し、結果をリポジトリ経由またはチャット報告で受け取る
 - 2026/09/19 法務ページ: /kabu-salon/tokushoho・privacy・terms を追加(文面は src/content/kabuSalonLegal.ts、会社情報は config の company)。会社情報はGmailの申込確認メールから取得(〒579-8036 東大阪市鷹殿町11-2 カワショウビル2・3階、090-8791-8955、senritsu@senritsu.site)。電話は携帯番号なので会社回線に替えるかは大成判断
 - 意思決定: 解約条件は「次回決済日の前日までの連絡で次回以降停止、支払済み期間末日まで利用可、返金・日割なし」で LP・特商法・規約を統一
+- 2026/09/27 申込リンク3本(Codex構築、Mac mini の Tailscale 配信 :10000/join/kabu_kizon|kabu_senko|kabu_ippan)。課金は毎月1日、9月中申込は初回0円で10/1初回課金。先着10名の締切は申込ページ側が自動で通常価格へ切替。LPの申込URLは先行価格リンク(kabu_senko)を入れる方針(大成指示)
+- 意思決定: 「初回0円」案内は isLaunchFreePeriod()(JST 9/30 23:59:59 まで)で出し分け、LP と特商法は revalidate=3600 で期日後に自動で消える

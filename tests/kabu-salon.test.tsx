@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import KabuSalonPage from "@/app/kabu-salon/page";
-import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
+import { isLaunchFreePeriod, kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 import { kabuSalonCopy } from "@/content/kabuSalon";
 import { kabuSalonImages } from "@/content/kabuSalonImages";
 import { PhotoCredits, resolvePhoto } from "@/app/kabu-salon/photos";
@@ -58,6 +58,19 @@ describe("株分析サロンLP", () => {
       screen.getAllByText(new RegExp(`${regular}.*税込 ${regularTax}`)).length
     ).toBeGreaterThan(0);
     expect(screen.getAllByText(new RegExp(early)).length).toBeGreaterThan(0);
+  });
+
+  it("料金の注記: 課金日は毎月1日、初回0円の案内はローンチ期間中だけ出る", () => {
+    const { container } = render(<KabuSalonPage />);
+    const text = container.textContent ?? "";
+    expect(text).toContain("課金日は毎月1日");
+    expect(container.querySelectorAll(".pricing-note__launch").length).toBe(
+      isLaunchFreePeriod() ? 1 : 0
+    );
+    if (isLaunchFreePeriod()) expect(text).toContain(kabuSalonCopy.pricing.launchNote);
+    // 参加までの流れは「Discordログイン → 決済 → 自動付与」
+    expect(text).toContain("Discordでログイン");
+    expect(text).not.toContain("決済ID");
   });
 
   it("申込ボタンは全て設定の申込URLへ向く", () => {

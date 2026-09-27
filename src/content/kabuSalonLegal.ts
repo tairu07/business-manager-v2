@@ -7,9 +7,10 @@
  *   - 投資助言・代理業ではない旨は必ず残す(弁護士指針 2026/08/17)
  *   - 個別銘柄の推奨・利回りの約束・断定表現は書かない
  */
-import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
+import { isLaunchFreePeriod, kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 
 const { name, company, pricing, zoom, urls } = kabuSalonConfig;
+const { billing } = pricing;
 
 export type LegalRow = {
   readonly label: string;
@@ -40,112 +41,121 @@ const regular = `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.reg
 const early = `月額 ${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})`;
 const contactLine = `メール: ${company.email} / 電話: ${company.tel}`;
 
-/** 特定商取引法に基づく表記(通信販売・継続的役務) */
-export const tokushoho: LegalDoc = {
-  slug: "tokushoho",
-  path: urls.tokushoho,
-  en: "Legal Notice",
-  title: "特定商取引法に基づく表記",
-  description: `${name}の販売事業者・価格・支払方法・解約条件など、特定商取引法第11条に基づく表示です。`,
-  rows: [
-    { label: "販売事業者", value: company.legalName },
-    { label: "代表者", value: company.representative },
-    {
-      label: "所在地",
-      value: `〒${company.postalCode} ${company.address}`,
-    },
-    {
-      label: "電話番号",
-      value: [company.tel, company.telNote],
-    },
-    { label: "メールアドレス", value: company.email },
-    {
-      label: "サービス名",
-      value: `${name}(会員制オンラインコミュニティ)`,
-    },
-    {
-      label: "サービス内容",
-      value: [
-        `週${zoom.perWeek}回を基本とするZoomでのリアルタイム配信(株式の分析過程・手法のリサーチ・公開コーチング等)、Discord上の会員限定コミュニティへの参加。`,
-        "本サービスは投資の考え方と分析過程を共有するものであり、金融商品取引法上の投資助言・代理業ではありません。個別銘柄の売買推奨は行いません。",
-      ],
-    },
-    {
-      label: "販売価格",
-      value: [
-        `通常価格: ${regular}`,
-        `先行価格(先着${pricing.earlyBirdSeats}名): ${early}`,
-        "先行価格は、在籍を継続している限り据え置きます。表示価格はすべて消費税込みの金額を併記しています。",
-      ],
-    },
-    {
-      label: "販売価格以外にお客様が負担する費用",
-      value:
-        "インターネット接続料金・通信料金はお客様のご負担となります。Zoom・Discordの利用に追加費用はかかりません。",
-    },
-    {
-      label: "支払方法",
-      value: `クレジットカード決済(決済代行: ${company.paymentProvider})。利用可能なカードブランドは決済ページに表示します。`,
-    },
-    {
-      label: "支払時期",
-      value: [
-        "お申込み時に初回1ヶ月分を決済します。",
-        "2ヶ月目以降は、初回決済日を基準として毎月同日に、ご登録のクレジットカードへ自動で課金されます(継続課金)。",
-      ],
-    },
-    {
-      label: "サービスの提供時期",
-      value: [
-        "決済完了後、自動返信メールでDiscordの招待リンクと決済IDをお送りします。案内に従って認証すると、直ちに会員限定コンテンツをご利用いただけます。",
-        "Zoom配信はDiscord内で告知する日程で実施します。",
-      ],
-    },
-    {
-      label: "契約期間・更新",
-      value:
-        "契約期間は1ヶ月です。解約のお申し出がない限り、同一条件で1ヶ月ごとに自動更新されます。",
-    },
-    {
-      label: "解約方法",
-      value: [
-        "Discord内の運営宛メッセージ、または下記メールアドレスへのご連絡で、いつでも解約できます。",
-        "次回決済日の前日までにご連絡いただいた場合、次回以降の課金を停止します。解約後も、お支払い済みの期間の末日までサービスをご利用いただけます。",
-        `連絡先 ${contactLine}`,
-      ],
-    },
-    {
-      label: "返品・キャンセル(返金)について",
-      value: [
-        "本サービスは役務・デジタルコンテンツの提供であり、性質上、決済完了後の返金・日割精算には応じられません。",
-        "当社の責めに帰すべき事由により、お支払い済み期間中にサービスを提供できなかった場合は、当該期間分を返金します。",
-        "通信販売にはクーリング・オフ制度の適用はありません。",
-      ],
-    },
-    {
-      label: "動作環境",
-      value:
-        "インターネットに接続でき、Zoom および Discord が利用できるパソコンまたはスマートフォン。各アプリの動作環境は提供元の案内に従います。",
-    },
-    {
-      label: "販売数量の制限・特別条件",
-      value: [
-        `先行価格の適用は先着${pricing.earlyBirdSeats}名までです。`,
-        "運営上の理由により、募集を予告なく停止・再開することがあります。",
-        "会員は利用規約に同意のうえお申込みください。配信内容の録画・転載・第三者への共有は禁止します。",
-      ],
-    },
-    {
-      label: "免責事項",
-      value:
-        "投資判断はご自身の責任で行ってください。本サービスの情報に基づく投資の結果について、当社は一切の責任を負いません。",
-    },
-    {
-      label: "お問い合わせ",
-      value: contactLine,
-    },
-  ],
-};
+/**
+ * 特定商取引法に基づく表記(通信販売・継続的役務)。
+ * 支払時期の「初回0円」の案内はローンチ期間中だけ載せるため、描画時刻を受け取る。
+ */
+export function getTokushoho(now: Date = new Date()): LegalDoc {
+  return {
+    slug: "tokushoho",
+    path: urls.tokushoho,
+    en: "Legal Notice",
+    title: "特定商取引法に基づく表記",
+    description: `${name}の販売事業者・価格・支払方法・解約条件など、特定商取引法第11条に基づく表示です。`,
+    rows: [
+      { label: "販売事業者", value: company.legalName },
+      { label: "代表者", value: company.representative },
+      {
+        label: "所在地",
+        value: `〒${company.postalCode} ${company.address}`,
+      },
+      {
+        label: "電話番号",
+        value: [company.tel, company.telNote],
+      },
+      { label: "メールアドレス", value: company.email },
+      {
+        label: "サービス名",
+        value: `${name}(会員制オンラインコミュニティ)`,
+      },
+      {
+        label: "サービス内容",
+        value: [
+          `週${zoom.perWeek}回を基本とするZoomでのリアルタイム配信(株式の分析過程・手法のリサーチ・公開コーチング等)、Discord上の会員限定コミュニティへの参加。`,
+          "本サービスは投資の考え方と分析過程を共有するものであり、金融商品取引法上の投資助言・代理業ではありません。個別銘柄の売買推奨は行いません。",
+        ],
+      },
+      {
+        label: "販売価格",
+        value: [
+          `通常価格: ${regular}`,
+          `先行価格(先着${pricing.earlyBirdSeats}名): ${early}`,
+          "先行価格は、在籍を継続している限り据え置きます。表示価格はすべて消費税込みの金額を併記しています。",
+        ],
+      },
+      {
+        label: "販売価格以外にお客様が負担する費用",
+        value:
+          "インターネット接続料金・通信料金はお客様のご負担となります。Zoom・Discordの利用に追加費用はかかりません。",
+      },
+      {
+        label: "支払方法",
+        value: `クレジットカード決済(決済代行: ${company.paymentProvider})。利用可能なカードブランドは決済ページに表示します。`,
+      },
+      {
+        label: "支払時期",
+        value: [
+          `初回はお申込み時に決済します。2ヶ月目以降は毎月${billing.dayOfMonth}日に、ご登録のクレジットカードへ自動で課金されます(継続課金)。初回の決済額は日割り計算を行いません。`,
+          ...(isLaunchFreePeriod(now)
+            ? [
+                `${billing.launchFreeUntilLabel}までにお申込みいただいた場合、初回の決済額は0円となり、初回の課金は${billing.firstChargeDate}です。`,
+              ]
+            : []),
+        ],
+      },
+      {
+        label: "サービスの提供時期",
+        value: [
+          "お申込みページでDiscordにログインし、決済が完了すると、1分ほどで会員権限が自動で付与され、直ちに会員限定コンテンツをご利用いただけます。",
+          "Zoom配信はDiscord内で告知する日程で実施します。",
+        ],
+      },
+      {
+        label: "契約期間・更新",
+        value:
+          "契約期間は1ヶ月です。解約のお申し出がない限り、同一条件で1ヶ月ごとに自動更新されます。",
+      },
+      {
+        label: "解約方法",
+        value: [
+          "Discord内の運営宛メッセージ、または下記メールアドレスへのご連絡で、いつでも解約できます。",
+          `次回の課金日(毎月${billing.dayOfMonth}日)の前日までにご連絡いただいた場合、次回以降の課金を停止します。解約後も、お支払い済みの期間の末日までサービスをご利用いただけます。`,
+          `連絡先 ${contactLine}`,
+        ],
+      },
+      {
+        label: "返品・キャンセル(返金)について",
+        value: [
+          "本サービスは役務・デジタルコンテンツの提供であり、性質上、決済完了後の返金・日割精算には応じられません。",
+          "当社の責めに帰すべき事由により、お支払い済み期間中にサービスを提供できなかった場合は、当該期間分を返金します。",
+          "通信販売にはクーリング・オフ制度の適用はありません。",
+        ],
+      },
+      {
+        label: "動作環境",
+        value:
+          "インターネットに接続でき、Zoom および Discord が利用できるパソコンまたはスマートフォン。各アプリの動作環境は提供元の案内に従います。",
+      },
+      {
+        label: "販売数量の制限・特別条件",
+        value: [
+          `先行価格の適用は先着${pricing.earlyBirdSeats}名までです。`,
+          "運営上の理由により、募集を予告なく停止・再開することがあります。",
+          "会員は利用規約に同意のうえお申込みください。配信内容の録画・転載・第三者への共有は禁止します。",
+        ],
+      },
+      {
+        label: "免責事項",
+        value:
+          "投資判断はご自身の責任で行ってください。本サービスの情報に基づく投資の結果について、当社は一切の責任を負いません。",
+      },
+      {
+        label: "お問い合わせ",
+        value: contactLine,
+      },
+    ],
+  };
+}
 
 /** プライバシーポリシー */
 export const privacy: LegalDoc = {
@@ -294,7 +304,7 @@ export const terms: LegalDoc = {
       heading: "第4条(料金と支払い)",
       list: [
         `本サービスの利用料金は、${regular}です。先着${pricing.earlyBirdSeats}名の先行価格(${early})は、在籍を継続している限り据え置きます。`,
-        `料金はクレジットカードによる継続課金でお支払いいただきます。初回はお申込み時に、2ヶ月目以降は毎月同日に自動で課金されます。決済は${company.paymentProvider}を通じて行います。`,
+        `料金はクレジットカードによる継続課金でお支払いいただきます。初回はお申込み時に、2ヶ月目以降は毎月${billing.dayOfMonth}日に自動で課金されます。初回の決済額は日割り計算を行いません。決済は${company.paymentProvider}を通じて行います。`,
         "当社は、料金を改定することがあります。改定する場合は、適用の1ヶ月前までにDiscordまたはメールで通知します。",
       ],
       ordered: true,
@@ -303,7 +313,7 @@ export const terms: LegalDoc = {
       heading: "第5条(契約期間・解約)",
       list: [
         "契約期間は1ヶ月とし、解約のお申し出がない限り、同一条件で自動更新されます。",
-        "会員は、Discord内の運営宛メッセージまたはメールで、いつでも解約を申し出ることができます。次回決済日の前日までのお申し出で、次回以降の課金を停止します。",
+        `会員は、Discord内の運営宛メッセージまたはメールで、いつでも解約を申し出ることができます。次回の課金日(毎月${billing.dayOfMonth}日)の前日までのお申し出で、次回以降の課金を停止します。`,
         "解約後も、お支払い済みの期間の末日までは本サービスを利用できます。支払い済み料金の返金・日割精算は行いません。",
         "当社の責めに帰すべき事由により、お支払い済み期間中に本サービスを提供できなかった場合は、当該期間分を返金します。",
       ],
@@ -385,4 +395,9 @@ export const terms: LegalDoc = {
   ],
 };
 
-export const kabuSalonLegalDocs = { tokushoho, privacy, terms } as const;
+/** フッターの相互リンク用の一覧(slug / path / title) */
+export const legalDocIndex = [
+  { slug: "tokushoho", path: urls.tokushoho, title: "特定商取引法に基づく表記" },
+  { slug: "privacy", path: urls.privacyPolicy, title: privacy.title },
+  { slug: "terms", path: urls.terms, title: terms.title },
+] as const;

@@ -5,8 +5,8 @@ import KabuSalonPage from "@/app/kabu-salon/page";
 import TokushohoPage from "@/app/kabu-salon/tokushoho/page";
 import PrivacyPage from "@/app/kabu-salon/privacy/page";
 import TermsPage from "@/app/kabu-salon/terms/page";
-import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
-import { kabuSalonLegalDocs } from "@/content/kabuSalonLegal";
+import { isLaunchFreePeriod, kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
+import { getTokushoho, legalDocIndex } from "@/content/kabuSalonLegal";
 
 const { company, pricing, urls } = kabuSalonConfig;
 
@@ -55,7 +55,9 @@ describe("株分析サロン 法務ページ", () => {
     // 継続課金・解約・返金・クーリングオフの説明(決済審査で見られる)
     expect(text).toMatch(/自動で課金|継続課金/);
     expect(text).toContain("自動更新");
-    expect(text).toContain("次回決済日の前日まで");
+    expect(text).toContain("毎月1日");
+    expect(text).toContain("の前日まで");
+    expect(text).toContain("日割り計算を行いません");
     expect(text).toContain("返金");
     expect(text).toContain("クーリング・オフ");
     // 投資助言でない旨
@@ -105,17 +107,36 @@ describe("株分析サロン 法務ページ", () => {
     expect(container.querySelectorAll("ul.legal__list").length).toBeGreaterThan(0);
   });
 
+  it("特商法表記: 初回0円の案内はローンチ期間中だけ載る(日本時間 9/30 23:59:59 まで)", () => {
+    const inside = new Date("2026-09-30T23:59:59+09:00");
+    const outside = new Date("2026-10-01T00:00:00+09:00");
+    expect(isLaunchFreePeriod(inside)).toBe(true);
+    expect(isLaunchFreePeriod(outside)).toBe(false);
+    const text = (doc: ReturnType<typeof getTokushoho>) =>
+      doc
+        .rows!.map((r) => (typeof r.value === "string" ? r.value : r.value.join("\n")))
+        .join("\n");
+    expect(text(getTokushoho(inside))).toContain("初回の決済額は0円");
+    expect(text(getTokushoho(inside))).toContain("2026年10月1日");
+    expect(text(getTokushoho(outside))).not.toContain("0円");
+    // 描画側は現在時刻で判定する(期日前後どちらでもこのテストは通る)
+    const { container } = render(<TokushohoPage />);
+    expect((container.textContent ?? "").includes("初回の決済額は0円")).toBe(
+      isLaunchFreePeriod()
+    );
+  });
+
   it("法務ページ同士とLPが相互にリンクしている", () => {
-    const docs = Object.values(kabuSalonLegalDocs);
+    const docs = legalDocIndex;
     expect(docs.map((d) => d.path)).toEqual([
       urls.tokushoho,
       urls.privacyPolicy,
       urls.terms,
     ]);
     for (const [Page, doc] of [
-      [TokushohoPage, kabuSalonLegalDocs.tokushoho],
-      [PrivacyPage, kabuSalonLegalDocs.privacy],
-      [TermsPage, kabuSalonLegalDocs.terms],
+      [TokushohoPage, legalDocIndex[0]],
+      [PrivacyPage, legalDocIndex[1]],
+      [TermsPage, legalDocIndex[2]],
     ] as const) {
       const { container, unmount } = render(<Page />);
       const hrefs = Array.from(container.querySelectorAll("a")).map((a) =>
