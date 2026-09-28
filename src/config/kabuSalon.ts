@@ -67,7 +67,7 @@ export const kabuSalonConfig = {
 
   urls: {
     /** 申込(決済)ページ。UnivaPayの決済リンクを設定する */
-    apply: "【申込・決済ページURL】",
+    apply: "https://tairu-salonmac-mini.tailce0a64.ts.net:10000/join/kabu_senko",
     /** X(旧Twitter)のプロフィール。スペースの実績に触れるため */
     x: "【X プロフィールURL】",
     /** プライバシーポリシー(サイト内ページ) */
