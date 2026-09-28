@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fragment } from "react";
 import { isLaunchFreePeriod, kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 import { kabuSalonCopy as copy } from "@/content/kabuSalon";
+import { siteUrl } from "@/config/site";
 import { Photo, PhotoCredits, photoStyle, resolvePhoto } from "./photos";
 import "./kabu-salon.css";
 
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
   title: { absolute: copy.meta.title },
   description: copy.meta.description,
   robots: { index: true, follow: true },
+  metadataBase: siteUrl(),
+  alternates: { canonical: kabuSalonConfig.urls.lp },
 };
 
 /** 実際に使う書体・ウェイトだけ要求する(明朝 400/500/600、ゴシック 300〜700、欧文は italic のみ) */

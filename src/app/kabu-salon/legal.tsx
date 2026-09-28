@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { kabuSalonConfig } from "@/config/kabuSalon";
+import { siteUrl } from "@/config/site";
 import { kabuSalonCopy as copy } from "@/content/kabuSalon";
 import type { LegalDoc } from "@/content/kabuSalonLegal";
 import { legalDocIndex } from "@/content/kabuSalonLegal";
@@ -16,6 +17,8 @@ export function legalMetadata(doc: LegalDoc): Metadata {
     title: { absolute: `${doc.title} | ${name}` },
     description: doc.description,
     robots: { index: true, follow: true },
+    metadataBase: siteUrl(),
+    alternates: { canonical: doc.path },
   };
 }
 

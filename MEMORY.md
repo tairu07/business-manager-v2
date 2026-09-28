@@ -30,3 +30,5 @@
 - 意思決定: 解約条件は「次回決済日の前日までの連絡で次回以降停止、支払済み期間末日まで利用可、返金・日割なし」で LP・特商法・規約を統一
 - 2026/09/27 申込リンク3本(Codex構築、Mac mini の Tailscale 配信 :10000/join/kabu_kizon|kabu_senko|kabu_ippan)。課金は毎月1日、9月中申込は初回0円で10/1初回課金。先着10名の締切は申込ページ側が自動で通常価格へ切替。LPの申込URLは先行価格リンク(kabu_senko)を入れる方針(大成指示)
 - 意思決定: 「初回0円」案内は isLaunchFreePeriod()(JST 9/30 23:59:59 まで)で出し分け、LP と特商法は revalidate=3600 で期日後に自動で消える
+- 2026/09/28 自社ドメイン化: senritsu.site はムームードメイン管理、直下は既に Vercel(76.76.21.21)を向いている(どのプロジェクトかは未確認)。LPは kabu.senritsu.site を想定。コード側は SITE_URL(canonical/metadataBase)と LEGACY_HOSTS(旧ホスト→新ドメインへ307)を env で切替
+- ハマり: 申込ページの Tailscale Funnel は独自ドメイン不可(*.ts.net 固定)。同一ドメイン化は Vercel の rewrite で /join/* を Mac mini へ中継する案。自動モードの安全チェックは「公開サイトの行き先を外部URLへ変える」編集を止めるので、申込URL・中継設定は Codex 側で行う
