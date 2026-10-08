@@ -79,8 +79,15 @@ export function getTokushoho(now: Date = new Date()): LegalDoc {
         label: "販売価格",
         value: [
           `通常価格: ${regular}`,
-          `先行価格(先着${pricing.earlyBirdSeats}名): ${early}`,
-          "先行価格は、在籍を継続している限り据え置きます。表示価格はすべて消費税込みの金額を併記しています。",
+          ...(pricing.earlyBirdOpen
+            ? [
+                `先行価格(先着${pricing.earlyBirdSeats}名): ${early}`,
+                "先行価格は、在籍を継続している限り据え置きます。",
+              ]
+            : [
+                `先行価格(${early})の受付は終了しました。先行価格でお申込みいただいた会員の料金は、在籍を継続している限り据え置きます。`,
+              ]),
+          "表示価格はすべて消費税込みの金額を併記しています。",
         ],
       },
       {
@@ -139,7 +146,9 @@ export function getTokushoho(now: Date = new Date()): LegalDoc {
       {
         label: "販売数量の制限・特別条件",
         value: [
-          `先行価格の適用は先着${pricing.earlyBirdSeats}名までです。`,
+          ...(pricing.earlyBirdOpen
+            ? [`先行価格の適用は先着${pricing.earlyBirdSeats}名までです。`]
+            : []),
           "運営上の理由により、募集を予告なく停止・再開することがあります。",
           "会員は利用規約に同意のうえお申込みください。配信内容の録画・転載・第三者への共有は禁止します。",
         ],
@@ -303,7 +312,7 @@ export const terms: LegalDoc = {
     {
       heading: "第4条(料金と支払い)",
       list: [
-        `本サービスの利用料金は、${regular}です。先着${pricing.earlyBirdSeats}名の先行価格(${early})は、在籍を継続している限り据え置きます。`,
+        `本サービスの利用料金は、${regular}です。先行価格(${early})でお申込みいただいた会員の料金は、在籍を継続している限り据え置きます。`,
         `料金はクレジットカードによる継続課金でお支払いいただきます。初回はお申込み時に、2ヶ月目以降は毎月${billing.dayOfMonth}日に自動で課金されます。初回の決済額は日割り計算を行いません。決済は${company.paymentProvider}を通じて行います。`,
         "当社は、料金を改定することがあります。改定する場合は、適用の1ヶ月前までにDiscordまたはメールで通知します。",
       ],

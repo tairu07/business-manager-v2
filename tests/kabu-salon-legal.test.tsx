@@ -51,7 +51,13 @@ describe("株分析サロン 法務ページ", () => {
     expect(text).toContain(
       `${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})`
     );
-    expect(text).toContain(`先着${pricing.earlyBirdSeats}名`);
+    if (pricing.earlyBirdOpen) {
+      expect(text).toContain(`先着${pricing.earlyBirdSeats}名`);
+    } else {
+      expect(text).not.toContain(`先着${pricing.earlyBirdSeats}名`);
+      expect(text).toContain("受付は終了しました");
+      expect(text).toContain("在籍を継続している限り据え置きます");
+    }
     // 継続課金・解約・返金・クーリングオフの説明(決済審査で見られる)
     expect(text).toMatch(/自動で課金|継続課金/);
     expect(text).toContain("自動更新");

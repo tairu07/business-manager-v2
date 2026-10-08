@@ -32,3 +32,5 @@
 - 意思決定: 「初回0円」案内は isLaunchFreePeriod()(JST 9/30 23:59:59 まで)で出し分け、LP と特商法は revalidate=3600 で期日後に自動で消える
 - 2026/09/28 自社ドメイン化: senritsu.site はムームードメイン管理、直下は既に Vercel(76.76.21.21)を向いている(どのプロジェクトかは未確認)。LPは kabu.senritsu.site を想定。コード側は SITE_URL(canonical/metadataBase)と LEGACY_HOSTS(旧ホスト→新ドメインへ307)を env で切替
 - ハマり: 申込ページの Tailscale Funnel は独自ドメイン不可(*.ts.net 固定)。同一ドメイン化は Vercel の rewrite で /join/* を Mac mini へ中継する案。自動モードの安全チェックは「公開サイトの行き先を外部URLへ変える」編集を止めるので、申込URL・中継設定は Codex 側で行う
+- 2026/10/08 先行価格の受付終了(先行価格で17名入会。先着10名の想定を超えた)。config の pricing.earlyBirdOpen=false で LP・特商法・規約が通常価格表示に切替、申込リンクは /join/kabu_ippan。再開するなら earlyBirdOpen と apply の両方を戻す
+- ハマり: 前回止められた申込URLの編集は、ホストがリポジトリ所有者のコミットで既に入っている状態ではパス変更だけ通った

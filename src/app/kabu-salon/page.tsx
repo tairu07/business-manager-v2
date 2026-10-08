@@ -23,6 +23,9 @@ const FONTS_HREF =
 
 const { pricing, operator, urls, name } = kabuSalonConfig;
 
+/** いま申し込んだ人に適用される月額(税抜) */
+const currentPrice = pricing.earlyBirdOpen ? pricing.earlyBird : pricing.regular;
+
 /** 【 】付きの値は未設定のプレースホルダー(公開前に config で置換する) */
 function isPlaceholder(value: string): boolean {
   return value.startsWith("【");
@@ -528,20 +531,30 @@ export default function KabuSalonPage() {
             </h2>
             <div className="pricing pricing--single">
               <div className="plan plan--featured reveal">
-                <span className="plan__tag">先着{pricing.earlyBirdSeats}名 先行価格</span>
+                <span className="plan__tag">
+                  {pricing.earlyBirdOpen
+                    ? `先着${pricing.earlyBirdSeats}名 先行価格`
+                    : "月額会員"}
+                </span>
                 <div className="plan__name">{name}</div>
                 <div className="plan__name-en">{operator.handle}</div>
                 <div className="plan__price">
-                  <span className="plan__amount">{yen(pricing.earlyBird)}</span>
+                  <span className="plan__amount">{yen(currentPrice)}</span>
                   <small>/ 月(税抜)</small>
                 </div>
-                <div className="plan__tax">税込 {yen(withTax(pricing.earlyBird))}</div>
+                <div className="plan__tax">税込 {yen(withTax(currentPrice))}</div>
                 <div className="plan__limit">
-                  先着{pricing.earlyBirdSeats}名の先行価格。
-                  <br />
-                  通常 {yen(pricing.regular)}(税込 {yen(withTax(pricing.regular))})
-                  <br />
-                  <BreakAfter text={copy.pricing.notes[0]} at="限り" />
+                  {pricing.earlyBirdOpen ? (
+                    <>
+                      先着{pricing.earlyBirdSeats}名の先行価格。
+                      <br />
+                      通常 {yen(pricing.regular)}(税込 {yen(withTax(pricing.regular))})
+                      <br />
+                      <BreakAfter text={copy.pricing.notes[0]} at="限り" />
+                    </>
+                  ) : (
+                    copy.pricing.notes[0]
+                  )}
                 </div>
                 <ul className="plan__list">
                   {copy.offer.items.map((item) => (

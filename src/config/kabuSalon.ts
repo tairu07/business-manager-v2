@@ -25,6 +25,12 @@ export const kabuSalonConfig = {
     earlyBird: 15000,
     /** 先行価格の対象人数 */
     earlyBirdSeats: 10,
+    /**
+     * 先行価格の受付中か。false にすると LP・特商法・規約が通常価格の表示に切り替わる。
+     * 申込リンク(urls.apply)も通常価格のページに合わせること。
+     * 2026/10/08 受付終了(先行価格で17名が入会)。
+     */
+    earlyBirdOpen: false,
     /** 消費税率 */
     taxRate: 0.1,
     /** 想定人数(10〜20人でよい、という本人の言葉) */
@@ -62,12 +68,12 @@ export const kabuSalonConfig = {
     /** 決済代行会社 */
     paymentProvider: "UnivaPay(ユニヴァ・ペイキャスト)",
     /** 法務文書の最終更新日(YYYY/MM/DD) */
-    legalUpdatedAt: "2026/09/19",
+    legalUpdatedAt: "2026/10/08",
   },
 
   urls: {
-    /** 申込(決済)ページ。UnivaPayの決済リンクを設定する */
-    apply: "https://tairu-salonmac-mini.tailce0a64.ts.net:10000/join/kabu_senko",
+    /** 申込(決済)ページ。earlyBirdOpen に合わせる(受付終了後は通常価格のページ) */
+    apply: "https://tairu-salonmac-mini.tailce0a64.ts.net:10000/join/kabu_ippan",
     /** X(旧Twitter)のプロフィール。スペースの実績に触れるため */
     x: "【X プロフィールURL】",
     /** プライバシーポリシー(サイト内ページ) */

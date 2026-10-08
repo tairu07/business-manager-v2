@@ -27,7 +27,9 @@ export const kabuSalonCopy = {
   },
 
   hero: {
-    badge: `MEMBERSHIP — 先着${pricing.earlyBirdSeats}名 先行価格`,
+    badge: pricing.earlyBirdOpen
+      ? `MEMBERSHIP — 先着${pricing.earlyBirdSeats}名 先行価格`
+      : "MEMBERSHIP — 会員募集中",
     heading: ["タイちゃんの思考を、", "そのまま聞ける部屋。"],
     /** 金にする語 */
     gold: "思考",
@@ -35,10 +37,12 @@ export const kabuSalonCopy = {
       "銘柄を教えるサロンではありません。",
       "株の分析とリサーチをする様子を、毎週そのまま見せます。",
     ],
-    priceLine: `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。先着${pricing.earlyBirdSeats}名は ${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})。`,
-    cta: "先行価格で申し込む",
+    priceLine: pricing.earlyBirdOpen
+      ? `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。先着${pricing.earlyBirdSeats}名は ${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})。`
+      : `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。`,
+    cta: pricing.earlyBirdOpen ? "先行価格で申し込む" : "申し込む",
     ctaSecondary: "なぜ作ったかを読む",
-    ctaNote: "決済完了後、自動返信メールでDiscordの招待リンクが届きます。",
+    ctaNote: "Discordでログインして決済すると、1分ほどで会員の部屋が開きます。",
   },
 
   /** なぜ作ったか(本人の言葉をほぼそのまま) */
@@ -267,13 +271,15 @@ export const kabuSalonCopy = {
     earlyLabel: `先着${pricing.earlyBirdSeats}名`,
     early: `月額 ${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})`,
     notes: [
-      "先行価格は、在籍している限り値上げしません。",
+      pricing.earlyBirdOpen
+        ? "先行価格は、在籍している限り値上げしません。"
+        : "先行価格の受付は終了しました。",
       `月単位の自動更新で、課金日は毎月${pricing.billing.dayOfMonth}日。解約はDiscord内の運営宛メッセージで、いつでもできます(課金日の前日まで)。`,
       "決済はクレジットカード。Discordでログインしてから決済するので、完了後1分ほどで会員限定の部屋が開きます。",
     ],
     /** ローンチ期間中だけ表示する(isLaunchFreePeriod) */
     launchNote: `${pricing.billing.launchFreeUntilLabel}までのお申込みは初回0円。初回の課金は${pricing.billing.firstChargeDate}です。`,
-    cta: "先行価格で申し込む",
+    cta: pricing.earlyBirdOpen ? "先行価格で申し込む" : "申し込む",
   },
 
   flow: {

@@ -57,7 +57,22 @@ describe("株分析サロンLP", () => {
     expect(
       screen.getAllByText(new RegExp(`${regular}.*税込 ${regularTax}`)).length
     ).toBeGreaterThan(0);
-    expect(screen.getAllByText(new RegExp(early)).length).toBeGreaterThan(0);
+    const amounts = Array.from(document.querySelectorAll(".plan__amount")).map(
+      (el) => el.textContent
+    );
+    if (kabuSalonConfig.pricing.earlyBirdOpen) {
+      expect(screen.getAllByText(new RegExp(early)).length).toBeGreaterThan(0);
+      expect(amounts).toEqual([early]);
+    } else {
+      // 受付終了後は先行価格を「今の価格」として出さない(請求額と表示を一致させる)
+      expect(amounts).toEqual([regular]);
+      const text = document.body.textContent ?? "";
+      expect(text).not.toContain(`先着${kabuSalonConfig.pricing.earlyBirdSeats}名`);
+      expect(text).toContain("先行価格の受付は終了しました");
+      for (const link of screen.getAllByRole("link", { name: /申し込む/ })) {
+        expect(link.textContent).not.toContain("先行価格");
+      }
+    }
   });
 
   it("料金の注記: 課金日は毎月1日、初回0円の案内はローンチ期間中だけ出る", () => {
