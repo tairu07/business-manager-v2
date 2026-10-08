@@ -69,6 +69,7 @@ export default function Home() {
                   href: "/launch/day-3?topic=arbitrage",
                 },
                 { label: "メールプレビュー", href: "/dev/emails" },
+                { label: "株分析サロンLP", href: "/kabu-salon" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
