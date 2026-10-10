@@ -1,0 +1,142 @@
+// This Pine Script® code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+//@version=6
+indicator("期間 陽線/陰線 出来高差(大口検証)", shorttitle = "陽陰出来高差", overlay = true)
+
+// ─────────────────────────────────────────────────────────────
+// 使い方
+//  1. チャートに追加すると「開始」「終了」を聞かれるので、チャート上を2回クリック
+//  2. インジケーター名(左上のステータス行)をクリックすると縦線が2本出る
+//     → 縦線を横にドラッグすると期間が変わり、集計も即更新される
+//
+// 集計内容(期間内の足のみ)
+//  陽線 = 終値 > 始値 の足の出来高合計
+//  陰線 = 終値 < 始値 の足の出来高合計
+//  差引 = 陽線出来高 − 陰線出来高(プラス = 陽線側が多い / マイナス = 陰線側が多い)
+// ─────────────────────────────────────────────────────────────
+
+const string GRP_RANGE = "期間(縦線をドラッグで変更)"
+const string GRP_CALC  = "集計"
+const string GRP_VIEW  = "表示"
+
+const string DOJI_SEPARATE = "別集計(差引に含めない)"
+const string DOJI_PREV     = "前の足の終値と比較して振り分け"
+
+int    startInput   = input.time(0, "開始", confirm = true, group = GRP_RANGE)
+int    endInput     = input.time(0, "終了", confirm = true, group = GRP_RANGE)
+string dojiInput    = input.string(DOJI_SEPARATE, "十字線(終値=始値)", options = [DOJI_SEPARATE, DOJI_PREV], group = GRP_CALC)
+string unitInput    = input.string("万株", "単位", options = ["万株", "株", "自動(株/万株/億株)"], group = GRP_CALC)
+color  upColorInput = input.color(#26a69a, "陽線・プラス", inline = "color", group = GRP_VIEW)
+color  dnColorInput = input.color(#ef5350, "陰線・マイナス", inline = "color", group = GRP_VIEW)
+bool   bgInput      = input.bool(true, "期間の背景を塗る", group = GRP_VIEW)
+bool   labelInput   = input.bool(true, "期間の上に差引ラベルを出す", group = GRP_VIEW)
+string posInput     = input.string("右上", "表の位置", options = ["右上", "右下", "左上", "左下"], group = GRP_VIEW)
+string sizeInput    = input.string("普通", "文字サイズ", options = ["小", "普通", "大"], group = GRP_VIEW)
+
+// 開始と終了を逆にドラッグしても動くように並べ替える
+int t0 = math.min(startInput, endInput)
+int t1 = math.max(startInput, endInput)
+
+// 縦線が乗っている足を含める(足の終わりが開始より後 かつ 足の始まりが終了以前)
+bool inRange = nz(time_close, time) > t0 and time <= t1
+
+// 足の向き: 1 = 陽線, -1 = 陰線, 0 = 十字線
+float prevClose = close[1]
+int dir = close > open ? 1 : close < open ? -1 : 0
+if dir == 0 and dojiInput == DOJI_PREV and not na(prevClose)
+    dir := close > prevClose ? 1 : close < prevClose ? -1 : 0
+
+// ── 期間内の集計 ──
+var float upVol     = 0.0
+var float dnVol     = 0.0
+var float flatVol   = 0.0
+var int   upBars    = 0
+var int   dnBars    = 0
+var int   flatBars  = 0
+var bool  hasVolume = false
+var int   firstTime = na
+var int   lastTime  = na
+var float firstOpen = na
+var float lastClose = na
+var float rangeHigh = na
+
+if inRange
+    float v = nz(volume)
+    if not na(volume)
+        hasVolume := true
+    if dir == 1
+        upVol  += v
+        upBars += 1
+    else if dir == -1
+        dnVol  += v
+        dnBars += 1
+    else
+        flatVol  += v
+        flatBars += 1
+    if na(firstTime)
+        firstTime := time
+        firstOpen := open
+    lastTime  := time
+    lastClose := close
+    rangeHigh := na(rangeHigh) ? high : math.max(rangeHigh, high)
+
+bgcolor(bgInput and inRange ? color.new(#2962ff, 90) : na, title = "期間の背景")
+
+// ── 表示用の書式 ──
+fmtVol(float v) =>
+    float a = math.abs(v)
+    string s = switch unitInput
+        "万株" => str.tostring(a / 1e4, "#,##0.0") + "万株"
+        "株"   => str.tostring(a, "#,##0") + "株"
+        =>        a >= 1e8 ? str.tostring(a / 1e8, "#,##0.00") + "億株" : a >= 1e4 ? str.tostring(a / 1e4, "#,##0.0") + "万株" : str.tostring(a, "#,##0") + "株"
+    s
+
+fmtSigned(float v) =>
+    (v > 0 ? "+" : v < 0 ? "-" : "±") + fmtVol(v)
+
+fmtDate(int t) =>
+    str.format_time(t, timeframe.isintraday ? "yyyy/MM/dd HH:mm" : "yyyy/MM/dd", syminfo.timezone)
+
+string tablePos = switch posInput
+    "右上" => position.top_right
+    "右下" => position.bottom_right
+    "左上" => position.top_left
+    =>        position.bottom_left
+
+string textSize = switch sizeInput
+    "小" => size.small
+    "大" => size.large
+    =>      size.normal
+
+var table tbl = table.new(tablePos, 2, 7, bgcolor = color.new(chart.bg_color, 10), frame_color = color.new(chart.fg_color, 70), frame_width = 1, border_color = color.new(chart.fg_color, 85), border_width = 1)
+var label lbl = na
+
+cell(int row, string key, string val, color valColor) =>
+    table.cell(tbl, 0, row, key, text_color = chart.fg_color, text_halign = text.align_left, text_size = textSize)
+    table.cell(tbl, 1, row, val, text_color = valColor, text_halign = text.align_right, text_size = textSize)
+
+if barstate.islast
+    label.delete(lbl)
+    if na(firstTime)
+        cell(0, "期間", "期間内に足がありません", chart.fg_color)
+    else if not hasVolume
+        cell(0, "期間", "このシンボルは出来高データがありません", chart.fg_color)
+    else
+        float net        = upVol - dnVol
+        color netColor   = net > 0 ? upColorInput : net < 0 ? dnColorInput : chart.fg_color
+        string verdict   = net > 0 ? "陽線側が多い" : net < 0 ? "陰線側が多い" : "拮抗"
+        int totalBars    = upBars + dnBars + flatBars
+        string ratioText = dnVol > 0 ? str.tostring(upVol / dnVol, "0.00") + "倍" : "-"
+        float chg        = firstOpen != 0 ? (lastClose / firstOpen - 1) * 100 : na
+        string chgText   = na(chg) ? "-" : (chg > 0 ? "+" : "") + str.tostring(chg, "0.0") + "%"
+
+        cell(0, "期間", fmtDate(firstTime) + " 〜 " + fmtDate(lastTime) + "(" + str.tostring(totalBars) + "本)", chart.fg_color)
+        cell(1, "陽線出来高", fmtVol(upVol) + "(" + str.tostring(upBars) + "本)", upColorInput)
+        cell(2, "陰線出来高", fmtVol(dnVol) + "(" + str.tostring(dnBars) + "本)", dnColorInput)
+        cell(3, "十字線", fmtVol(flatVol) + "(" + str.tostring(flatBars) + "本)", chart.fg_color)
+        cell(4, "差引(陽−陰)", fmtSigned(net), netColor)
+        cell(5, "陽÷陰", ratioText, chart.fg_color)
+        cell(6, "期間騰落率", chgText, chart.fg_color)
+
+        if labelInput
+            int midTime = firstTime + int((lastTime - firstTime) / 2)
+            lbl := label.new(midTime, rangeHigh, "差引 " + fmtSigned(net) + "\n" + verdict, xloc = xloc.bar_time, yloc = yloc.price, color = netColor, style = label.style_label_down, textcolor = color.white, size = textSize)
