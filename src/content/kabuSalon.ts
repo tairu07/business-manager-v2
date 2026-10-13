@@ -17,7 +17,14 @@ import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
  * 過去の売買は「事実の記述」に留め、将来を保証しない旨を免責に置く。
  */
 
-const { pricing, operator, name, zoom } = kabuSalonConfig;
+const { pricing, operator, name, zoom, enrollment } = kabuSalonConfig;
+
+/** ボタンの文言(募集中は申込、停止中は LINE で待機) */
+const ctaLabel = enrollment.open
+  ? pricing.earlyBirdOpen
+    ? "先行価格で申し込む"
+    : "申し込む"
+  : "LINE@で待機する";
 
 export const kabuSalonCopy = {
   meta: {
@@ -27,9 +34,11 @@ export const kabuSalonCopy = {
   },
 
   hero: {
-    badge: pricing.earlyBirdOpen
-      ? `MEMBERSHIP — 先着${pricing.earlyBirdSeats}名 先行価格`
-      : "MEMBERSHIP — 会員募集中",
+    badge: !enrollment.open
+      ? "MEMBERSHIP — 今期の募集は終了"
+      : pricing.earlyBirdOpen
+        ? `MEMBERSHIP — 先着${pricing.earlyBirdSeats}名 先行価格`
+        : "MEMBERSHIP — 会員募集中",
     heading: ["タイちゃんの思考を、", "そのまま聞ける部屋。"],
     /** 金にする語 */
     gold: "思考",
@@ -39,10 +48,14 @@ export const kabuSalonCopy = {
     ],
     priceLine: pricing.earlyBirdOpen
       ? `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。先着${pricing.earlyBirdSeats}名は ${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})。`
-      : `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。`,
-    cta: pricing.earlyBirdOpen ? "先行価格で申し込む" : "申し込む",
+      : `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。${enrollment.open ? "" : "今期の募集は終了しました。"}`,
+    cta: ctaLabel,
+    /** ナビ右上の小さいボタン */
+    navCta: enrollment.open ? "申し込む" : "LINEで待機",
     ctaSecondary: "なぜ作ったかを読む",
-    ctaNote: "Discordでログインして決済すると、1分ほどで会員の部屋が開きます。",
+    ctaNote: enrollment.open
+      ? "Discordでログインして決済すると、1分ほどで会員の部屋が開きます。"
+      : "次の募集は、LINEで最初にお知らせします。",
   },
 
   /** なぜ作ったか(本人の言葉をほぼそのまま) */
@@ -271,15 +284,17 @@ export const kabuSalonCopy = {
     earlyLabel: `先着${pricing.earlyBirdSeats}名`,
     early: `月額 ${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})`,
     notes: [
-      pricing.earlyBirdOpen
-        ? "先行価格は、在籍している限り値上げしません。"
-        : "先行価格の受付は終了しました。",
+      !enrollment.open
+        ? "今期の募集は終了しました。次の募集はLINEでお知らせします。"
+        : pricing.earlyBirdOpen
+          ? "先行価格は、在籍している限り値上げしません。"
+          : "先行価格の受付は終了しました。",
       `月単位の自動更新で、課金日は毎月${pricing.billing.dayOfMonth}日。解約はDiscord内の運営宛メッセージで、いつでもできます(課金日の前日まで)。`,
       "決済はクレジットカード。Discordでログインしてから決済するので、完了後1分ほどで会員限定の部屋が開きます。",
     ],
     /** ローンチ期間中だけ表示する(isLaunchFreePeriod) */
     launchNote: `${pricing.billing.launchFreeUntilLabel}までのお申込みは初回0円。初回の課金は${pricing.billing.firstChargeDate}です。`,
-    cta: pricing.earlyBirdOpen ? "先行価格で申し込む" : "申し込む",
+    cta: ctaLabel,
   },
 
   flow: {

@@ -68,8 +68,12 @@ describe("株分析サロンLP", () => {
       expect(amounts).toEqual([regular]);
       const text = document.body.textContent ?? "";
       expect(text).not.toContain(`先着${kabuSalonConfig.pricing.earlyBirdSeats}名`);
-      expect(text).toContain("先行価格の受付は終了しました");
-      for (const link of screen.getAllByRole("link", { name: /申し込む/ })) {
+      expect(text).toContain(
+        kabuSalonConfig.enrollment.open
+          ? "先行価格の受付は終了しました"
+          : "今期の募集は終了しました"
+      );
+      for (const link of screen.queryAllByRole("link", { name: /申し込む/ })) {
         expect(link.textContent).not.toContain("先行価格");
       }
     }
@@ -88,12 +92,31 @@ describe("株分析サロンLP", () => {
     expect(text).not.toContain("決済ID");
   });
 
-  it("申込ボタンは全て設定の申込URLへ向く", () => {
-    render(<KabuSalonPage />);
-    const links = screen.getAllByRole("link", { name: /申し込む/ });
-    expect(links.length).toBeGreaterThanOrEqual(3);
-    for (const link of links) {
-      expect(link).toHaveAttribute("href", kabuSalonConfig.urls.apply);
+  it("CTAボタン4本は、募集中は申込URLへ、募集停止中はLINE公式アカウントへ向く", () => {
+    const { container } = render(<KabuSalonPage />);
+    const { enrollment, urls } = kabuSalonConfig;
+    const ctas = Array.from(
+      container.querySelectorAll<HTMLAnchorElement>(
+        ".nav__cta, #cta-hero, #cta-pricing, #cta-final"
+      )
+    );
+    expect(ctas).toHaveLength(4);
+    const expected = enrollment.open ? urls.apply : urls.waitlist;
+    for (const link of ctas) {
+      expect(link).toHaveAttribute("href", expected);
+    }
+    const hrefs = Array.from(container.querySelectorAll("a")).map((a) =>
+      a.getAttribute("href")
+    );
+    if (enrollment.open) {
+      for (const link of ctas) expect(link.textContent).toMatch(/申し込む/);
+      expect(hrefs).not.toContain(urls.waitlist);
+    } else {
+      // 募集停止中は決済ページへのリンクを一切出さない
+      expect(hrefs).not.toContain(urls.apply);
+      for (const link of ctas) expect(link.textContent).toMatch(/LINE/);
+      expect(screen.queryAllByRole("link", { name: /申し込む/ })).toHaveLength(0);
+      expect(container.textContent).toContain("今期の募集は終了");
     }
   });
 

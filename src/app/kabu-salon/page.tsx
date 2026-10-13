@@ -23,6 +23,9 @@ const FONTS_HREF =
 
 const { pricing, operator, urls, name } = kabuSalonConfig;
 
+/** 申込ボタンの行き先(募集停止中は LINE 公式アカウント) */
+const ctaHref = kabuSalonConfig.enrollment.open ? urls.apply : urls.waitlist;
+
 /** いま申し込んだ人に適用される月額(税抜) */
 const currentPrice = pricing.earlyBirdOpen ? pricing.earlyBird : pricing.regular;
 
@@ -236,8 +239,8 @@ export default function KabuSalonPage() {
           <a className="nav__link" href="#pricing">
             料金
           </a>
-          <a className="nav__cta" href={urls.apply}>
-            申し込む
+          <a className="nav__cta" href={ctaHref}>
+            {copy.hero.navCta}
           </a>
         </div>
       </nav>
@@ -264,7 +267,7 @@ export default function KabuSalonPage() {
             <Sentences text={copy.hero.priceLine} />
           </p>
           <div className="hero__cta-group">
-            <a className="btn btn--primary" href={urls.apply} id="cta-hero">
+            <a className="btn btn--primary" href={ctaHref} id="cta-hero">
               {copy.hero.cta}
             </a>
             <a className="btn btn--ghost" href="#why">
@@ -532,9 +535,11 @@ export default function KabuSalonPage() {
             <div className="pricing pricing--single">
               <div className="plan plan--featured reveal">
                 <span className="plan__tag">
-                  {pricing.earlyBirdOpen
-                    ? `先着${pricing.earlyBirdSeats}名 先行価格`
-                    : "月額会員"}
+                  {!kabuSalonConfig.enrollment.open
+                    ? "募集終了"
+                    : pricing.earlyBirdOpen
+                      ? `先着${pricing.earlyBirdSeats}名 先行価格`
+                      : "月額会員"}
                 </span>
                 <div className="plan__name">{name}</div>
                 <div className="plan__name-en">{operator.handle}</div>
@@ -544,7 +549,7 @@ export default function KabuSalonPage() {
                 </div>
                 <div className="plan__tax">税込 {yen(withTax(currentPrice))}</div>
                 <div className="plan__limit">
-                  {pricing.earlyBirdOpen ? (
+                  {kabuSalonConfig.enrollment.open && pricing.earlyBirdOpen ? (
                     <>
                       先着{pricing.earlyBirdSeats}名の先行価格。
                       <br />
@@ -562,7 +567,7 @@ export default function KabuSalonPage() {
                   ))}
                   <li>今後のサロン・ツールの会員割引</li>
                 </ul>
-                <a className="btn btn--primary" href={urls.apply} id="cta-pricing">
+                <a className="btn btn--primary" href={ctaHref} id="cta-pricing">
                   {copy.pricing.cta}
                 </a>
               </div>
@@ -635,7 +640,7 @@ export default function KabuSalonPage() {
               <br />
               {copy.honest.items[2].body}
             </p>
-            <a className="btn btn--primary" href={urls.apply} id="cta-final">
+            <a className="btn btn--primary" href={ctaHref} id="cta-final">
               {copy.pricing.cta}
             </a>
             <p className="final__note">{copy.hero.ctaNote}</p>

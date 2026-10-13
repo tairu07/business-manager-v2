@@ -54,6 +54,15 @@ export const kabuSalonConfig = {
   },
 
   /**
+   * 新規募集の受付中か。false の間、申込ボタンは LINE 公式アカウント(urls.waitlist)への
+   * 待機ボタンに切り替わる。再開するときは true に戻すだけ(urls.apply は残してある)。
+   * 2026/10/13 今期の募集終了。
+   */
+  enrollment: {
+    open: false,
+  },
+
+  /**
    * 運営会社(特定商取引法に基づく表記・プライバシーポリシー・利用規約にのみ表示する)。
    * LP本文には出さない(本名・社名を出さない方針)。
    */
@@ -74,6 +83,8 @@ export const kabuSalonConfig = {
   urls: {
     /** 申込(決済)ページ。earlyBirdOpen に合わせる(受付終了後は通常価格のページ) */
     apply: "https://tairu-salonmac-mini.tailce0a64.ts.net:10000/join/kabu_ippan",
+    /** 募集停止中のボタンの行き先(LINE公式アカウントの友だち追加) */
+    waitlist: "https://lin.ee/OmdMRVP",
     /** X(旧Twitter)のプロフィール。スペースの実績に触れるため */
     x: "【X プロフィールURL】",
     /** プライバシーポリシー(サイト内ページ) */

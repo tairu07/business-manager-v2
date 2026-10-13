@@ -34,3 +34,5 @@
 - ハマり: 申込ページの Tailscale Funnel は独自ドメイン不可(*.ts.net 固定)。同一ドメイン化は Vercel の rewrite で /join/* を Mac mini へ中継する案。自動モードの安全チェックは「公開サイトの行き先を外部URLへ変える」編集を止めるので、申込URL・中継設定は Codex 側で行う
 - 2026/10/08 先行価格の受付終了(先行価格で17名入会。先着10名の想定を超えた)。config の pricing.earlyBirdOpen=false で LP・特商法・規約が通常価格表示に切替、申込リンクは /join/kabu_ippan。再開するなら earlyBirdOpen と apply の両方を戻す
 - ハマり: 前回止められた申込URLの編集は、ホストがリポジトリ所有者のコミットで既に入っている状態ではパス変更だけ通った
+- 2026/10/13 今期の募集終了。config の enrollment.open=false で、ボタン4本が LINE 公式アカウント(urls.waitlist)への「LINE@で待機する」に切替、決済ページへのリンクはLPから消える。再開は enrollment.open=true に戻すだけ(urls.apply=kabu_ippan は残してある)
+- 宿題: LINE公式アカウントで取得する情報(表示名・ユーザーID・メッセージ)がプライバシーポリシーに未記載
