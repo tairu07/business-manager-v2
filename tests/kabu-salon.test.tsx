@@ -157,6 +157,28 @@ describe("株分析サロンLP", () => {
     expect(all).not.toContain("9,000");
   });
 
+  it("目標200人の方針と矛盾する「少人数・10〜20人でいい・稼ぐためではない」を出さない", () => {
+    const { container } = render(<KabuSalonPage />);
+    const text = container.textContent ?? "";
+    expect(text).toContain("食べていくと決めました");
+    expect(text).toContain(`目標は${kabuSalonConfig.pricing.goalMembers}人`);
+    expect(text).toContain("今の仲間と生きていく");
+    // 「10〜20人」は過去の想定として語りの中で1回だけ触れる
+    expect(text).toContain("最初は、10〜20人でいいと思っていました");
+    expect(text.split("10〜20人").length - 1).toBe(1);
+    for (const stale of [
+      "少人数",
+      "大勢を集める気はありません",
+      "稼ぐためのサロンでは",
+      "稼ぐために開くものではありません",
+      "本業でも、集客でもない",
+    ]) {
+      expect(text).not.toContain(stale);
+    }
+    // 「組織」とは書かない(社名を出さない方針)
+    expect(text).not.toContain("組織");
+  });
+
   it("写真マニフェストの各スロットは alt・寸法を持ち、slot が重複しない", () => {
     const slots = kabuSalonImages.map((m) => m.slot);
     expect(new Set(slots).size).toBe(slots.length);

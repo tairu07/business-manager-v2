@@ -322,6 +322,18 @@ export default function KabuSalonPage() {
               <br className="br-sm" />
               {copy.honest.heading[1]}
             </h2>
+            <p className="lead honest__lead reveal">
+              {copy.honest.lead.map((line, i) => (
+                <Fragment key={i}>
+                  {i > 0 ? <br /> : null}
+                  {typeof line === "string" ? (
+                    line
+                  ) : (
+                    <BreakAfter text={line.text} at={line.breakAfter} mobileOnly />
+                  )}
+                </Fragment>
+              ))}
+            </p>
             <div className="values" style={{ marginTop: 64 }}>
               {copy.honest.items.map((item, i) => (
                 <div className="reveal" key={item.title}>
@@ -638,7 +650,7 @@ export default function KabuSalonPage() {
             <p className="final__sub">
               <Sentences text={copy.hero.priceLine} />
               <br />
-              {copy.honest.items[2].body}
+              <BreakAfter text={copy.honest.items[2].body} at="、" mobileOnly />
             </p>
             <a className="btn btn--primary" href={ctaHref} id="cta-final">
               {copy.pricing.cta}

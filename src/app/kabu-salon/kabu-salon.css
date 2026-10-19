@@ -134,6 +134,12 @@ body:has(.ks) {
   color: var(--kinari-dim);
   font-size: 0.98rem;
 }
+.ks .honest__lead {
+  margin-top: 40px;
+  font-family: var(--serif);
+  color: var(--kinari);
+  line-height: 2.2;
+}
 .ks .lead--center {
   margin: 0 auto;
   text-align: center;

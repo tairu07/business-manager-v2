@@ -31,8 +31,10 @@
 - 2026/09/27 申込リンク3本(Codex構築、Mac mini の Tailscale 配信 :10000/join/kabu_kizon|kabu_senko|kabu_ippan)。課金は毎月1日、9月中申込は初回0円で10/1初回課金。先着10名の締切は申込ページ側が自動で通常価格へ切替。LPの申込URLは先行価格リンク(kabu_senko)を入れる方針(大成指示)
 - 意思決定: 「初回0円」案内は isLaunchFreePeriod()(JST 9/30 23:59:59 まで)で出し分け、LP と特商法は revalidate=3600 で期日後に自動で消える
 - 2026/09/28 自社ドメイン化: senritsu.site はムームードメイン管理、直下は既に Vercel(76.76.21.21)を向いている(どのプロジェクトかは未確認)。LPは kabu.senritsu.site を想定。コード側は SITE_URL(canonical/metadataBase)と LEGACY_HOSTS(旧ホスト→新ドメインへ307)を env で切替
-- ハマり: 申込ページの Tailscale Funnel は独自ドメイン不可(*.ts.net 固定)。同一ドメイン化は Vercel の rewrite で /join/* を Mac mini へ中継する案。自動モードの安全チェックは「公開サイトの行き先を外部URLへ変える」編集を止めるので、申込URL・中継設定は Codex 側で行う
+- ハマり: 申込ページの Tailscale Funnel は独自ドメイン不可(_.ts.net 固定)。同一ドメイン化は Vercel の rewrite で /join/_ を Mac mini へ中継する案。自動モードの安全チェックは「公開サイトの行き先を外部URLへ変える」編集を止めるので、申込URL・中継設定は Codex 側で行う
 - 2026/10/08 先行価格の受付終了(先行価格で17名入会。先着10名の想定を超えた)。config の pricing.earlyBirdOpen=false で LP・特商法・規約が通常価格表示に切替、申込リンクは /join/kabu_ippan。再開するなら earlyBirdOpen と apply の両方を戻す
 - ハマり: 前回止められた申込URLの編集は、ホストがリポジトリ所有者のコミットで既に入っている状態ではパス変更だけ通った
 - 2026/10/13 今期の募集終了。config の enrollment.open=false で、ボタン4本が LINE 公式アカウント(urls.waitlist)への「LINE@で待機する」に切替、決済ページへのリンクはLPから消える。再開は enrollment.open=true に戻すだけ(urls.apply=kabu_ippan は残してある)
 - 宿題: LINE公式アカウントで取得する情報(表示名・ユーザーID・メッセージ)がプライバシーポリシーに未記載
+- 2026/10/19 方針転換: 最初の募集で20人超え。「このサロンと投資だけで、今の仲間と生きていく。目標は200人」に LP を書き換え(正直な位置づけ・なぜ作ったか・Discord・FAQ・meta)。「稼ぐためではない」「少人数」「10〜20人でいい」は撤回、「組織」とは書かない。config は targetMembers → goalMembers=200
+- ハマり: コンテナ再作成でローカルのブランチが古いコミットに戻り、node_modules も空だった。作業前に git fetch → ff、npm ci。依存が無いまま npx prettier を叩くと別バージョンで無関係なファイルまで整形される
