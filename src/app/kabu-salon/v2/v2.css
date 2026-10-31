@@ -36,6 +36,47 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
+/* 割安の型(4つ)。広い画面は4列、タブレットは2列、スマホは1列 */
+.ks.ks-v2 .values--four {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 48px 36px;
+}
+
+/* 回戦制の説明 */
+.ks-v2 .rounds__title {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+/* これからの1年(時期と中身の2列) */
+.ks-v2 .roadmap {
+  margin-top: 48px;
+  max-width: 880px;
+  border-top: 1px solid var(--gold-line);
+}
+.ks-v2 .roadmap__item {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--gold-line);
+}
+.ks-v2 .roadmap__when {
+  font-family: var(--serif);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  line-height: 1.9;
+}
+.ks-v2 .roadmap__body {
+  font-size: 0.95rem;
+  line-height: 2;
+  color: var(--kinari);
+}
+
 /* 本文の段落 */
 .ks-v2 .prose {
   max-width: 720px;
@@ -122,6 +163,11 @@
   margin-top: 40px;
 }
 
+@media (max-width: 960px) {
+  .ks.ks-v2 .values--four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 @media (max-width: 860px) {
   .ks.ks-v2 .precepts--two {
     grid-template-columns: 1fr;
@@ -131,6 +177,14 @@
   }
 }
 @media (max-width: 600px) {
+  .ks.ks-v2 .values--four {
+    grid-template-columns: 1fr;
+  }
+  .ks-v2 .roadmap__item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 22px 0;
+  }
   .ks-v2 .feel li {
     font-size: 0.95rem;
     padding-left: 28px;

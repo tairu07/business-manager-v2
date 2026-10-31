@@ -269,7 +269,7 @@ export default function KabuSalonV2Page() {
               ))}
             </div>
             <p className="axes-lead reveal">{copy.solution.axesLead}</p>
-            <div className="values">
+            <div className="values values--four">
               {copy.solution.axes.map((item, i) => (
                 <div className="reveal" key={item.title}>
                   <div className="value__head">
@@ -280,6 +280,7 @@ export default function KabuSalonV2Page() {
                 </div>
               ))}
             </div>
+            <p className="prose reveal">{copy.solution.axesNote}</p>
           </div>
         </section>
 
@@ -311,6 +312,10 @@ export default function KabuSalonV2Page() {
                 </li>
               ))}
             </ol>
+            <div className="note-box rounds reveal">
+              <p className="rounds__title">{copy.contents.rounds.title}</p>
+              <p>{copy.contents.rounds.body}</p>
+            </div>
             <p className="values-note reveal">※ {copy.contents.note}</p>
           </div>
         </section>
@@ -336,6 +341,28 @@ export default function KabuSalonV2Page() {
               ))}
             </div>
             <p className="note-box reveal">{copy.benefit.honest}</p>
+          </div>
+        </section>
+
+        {/* これからの1年 */}
+        <section className={sectionClass()} id="roadmap">
+          <div className="container">
+            <Eyebrow en={copy.roadmap.en} jp={copy.roadmap.jp} />
+            <h2 className="h2 reveal">
+              {copy.roadmap.heading[0]}
+              <br className="br-sm" />
+              {copy.roadmap.heading[1]}
+            </h2>
+            <p className="lead reveal">{copy.roadmap.lead}</p>
+            <ol className="roadmap reveal">
+              {copy.roadmap.items.map((item) => (
+                <li className="roadmap__item" key={item.when}>
+                  <span className="roadmap__when">{item.when}</span>
+                  <p className="roadmap__body">{item.body}</p>
+                </li>
+              ))}
+            </ol>
+            <p className="values-note reveal">※ {copy.roadmap.note}</p>
           </div>
         </section>
 

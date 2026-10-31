@@ -75,6 +75,11 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
         "銘柄を買った",
         "選んだ銘柄",
         "儲かる銘柄",
+        "稼げる",
+        "仕手",
+        "ファンド",
+        "サヤ取り",
+        "銘柄が動",
       ]) {
         expect(text).not.toContain(phrase);
       }
@@ -98,6 +103,22 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
     expect(text).toContain("見ているだけでは身につきません");
     // 追伸がある
     expect(container.querySelector("#ps .ps__label")?.textContent).toBe("追伸");
+  });
+
+  it("割安の型4つ・回戦制・これからの1年が出て、先の話は「予定」「目安」と書かれている", () => {
+    const { container } = render(<KabuSalonV2Page />);
+    const text = container.textContent ?? "";
+    expect(
+      container.querySelectorAll("#solution .values--four .value__title")
+    ).toHaveLength(4);
+    for (const t of ["資産で割安", "利益で割安", "成長で割安", "知名度で割安"]) {
+      expect(text).toContain(t);
+    }
+    expect(text).toContain("1回戦目は、最後に17銘柄まで絞り込みました");
+    expect(container.querySelectorAll("#roadmap .roadmap__item")).toHaveLength(4);
+    expect(text).toContain("投資分析アナリストマスター");
+    expect(container.querySelector("#roadmap")?.textContent).toMatch(/予定/);
+    expect(container.querySelector("#roadmap")?.textContent).toMatch(/時期は目安/);
   });
 
   it("会員の声は、許可を取った言葉が無いうちは欄ごと出さない", () => {
