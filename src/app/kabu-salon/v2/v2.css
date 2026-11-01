@@ -1,0 +1,202 @@
+/*
+ * 新LP(/kabu-salon/v2)だけの追加スタイル。今のLPに影響しないよう .ks-v2 の中に閉じる。
+ * 色・書体は kabu-salon.css の変数をそのまま使う。
+ */
+
+/* 読み手の気持ちの一覧(金の菱形マーク付き) */
+.ks-v2 .feel {
+  margin-top: 48px;
+  max-width: 880px;
+  border-top: 1px solid var(--gold-line);
+}
+.ks-v2 .feel li {
+  position: relative;
+  padding: 22px 0 22px 34px;
+  border-bottom: 1px solid var(--gold-line);
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--kinari);
+}
+.ks-v2 .feel li::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 34px;
+  width: 7px;
+  height: 7px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+.ks-v2 .affinity {
+  margin-top: 56px;
+}
+
+/* 4項目を 2×2 で並べる(4列だと見出しが途中で折れるため) */
+.ks.ks-v2 .precepts--two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 割安の型(4つ)。広い画面は4列、タブレットは2列、スマホは1列 */
+.ks.ks-v2 .values--four {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 48px 36px;
+}
+
+/* 回戦制の説明 */
+.ks-v2 .rounds__title {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+/* これからの1年(時期と中身の2列) */
+.ks-v2 .roadmap {
+  margin-top: 48px;
+  max-width: 880px;
+  border-top: 1px solid var(--gold-line);
+}
+.ks-v2 .roadmap__item {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--gold-line);
+}
+.ks-v2 .roadmap__when {
+  font-family: var(--serif);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  line-height: 1.9;
+}
+.ks-v2 .roadmap__body {
+  font-size: 0.95rem;
+  line-height: 2;
+  color: var(--kinari);
+}
+
+/* 本文の段落 */
+.ks-v2 .prose {
+  max-width: 720px;
+  margin-top: 32px;
+  color: var(--kinari-dim);
+  font-size: 1rem;
+  line-height: 2.1;
+}
+.ks-v2 .prose p + p {
+  margin-top: 18px;
+}
+.ks-v2 .axes-lead {
+  margin: 64px 0 28px;
+  font-family: var(--serif);
+  color: var(--kinari);
+  letter-spacing: 0.12em;
+}
+
+/* 「ただし、見ているだけでは身につかない」の注記 */
+.ks-v2 .note-box {
+  margin-top: 48px;
+  max-width: 880px;
+  padding: 26px 30px;
+  border: 1px solid var(--gold-line);
+  border-left: 2px solid var(--gold);
+  color: var(--kinari);
+  font-size: 0.95rem;
+  line-height: 2;
+}
+
+/* 会員の声(許可を取った言葉があるときだけ出る) */
+.ks-v2 .voices {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.ks-v2 .voice {
+  margin: 0;
+  padding: 32px 28px;
+  border: 1px solid var(--gold-line);
+}
+.ks-v2 .voice__quote {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--kinari);
+}
+.ks-v2 .voice__who {
+  margin-top: 18px;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: var(--kinari-faint);
+}
+
+/* 追伸 */
+.ks-v2 .ps-section {
+  padding-bottom: 120px;
+}
+.ks-v2 .ps {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-top: 40px;
+  border-top: 1px solid var(--gold-line);
+}
+.ks-v2 .ps__label {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.ks-v2 .ps__body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 2.2;
+  color: var(--kinari);
+}
+.ks-v2 .ps__body + .ps__body {
+  margin-top: 18px;
+}
+.ks-v2 .ps__cta {
+  margin-top: 40px;
+}
+
+@media (max-width: 960px) {
+  .ks.ks-v2 .values--four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 860px) {
+  .ks.ks-v2 .precepts--two {
+    grid-template-columns: 1fr;
+  }
+  .ks-v2 .voices {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .ks.ks-v2 .values--four {
+    grid-template-columns: 1fr;
+  }
+  .ks-v2 .roadmap__item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 22px 0;
+  }
+  .ks-v2 .feel li {
+    font-size: 0.95rem;
+    padding-left: 28px;
+  }
+  .ks-v2 .feel li::before {
+    left: 4px;
+    top: 33px;
+  }
+  .ks-v2 .note-box {
+    padding: 22px 20px;
+  }
+  .ks-v2 .axes-lead {
+    margin-top: 48px;
+  }
+}

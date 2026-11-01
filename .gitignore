@@ -44,3 +44,6 @@ prisma/*.db-journal
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 株分析サロンLP の仮画像(プロシージャル生成。本物の写真は <slot>.jpg で置く)
+public/kabu-salon/img/*.placeholder.jpg
