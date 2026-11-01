@@ -46,3 +46,5 @@
 - 意思決定: ファンド構想・サヤ取り・仕手株・「ツールだけで稼げる」・人数上限の理由(銘柄が動く)はLPに書かない。録音では人数上限は「マックス500人」、LPの目標は200人のまま
 - ハマり: Plaud の共有リンク(web.plaud.ai/s/pub_…)は JS 描画で、取れるのは見出し1行だけ。録音名とも一致しないので MCP でも探せない → 本文を貼ってもらう
 - 2026/10/31 「中学生のころから、バリュー投資を続けてきました」は新LPに載せてよいと大成が確認済み
+- 2026/11/01 公開ドメインは tairusalon.com(Vercel、同じプロジェクト)。X の告知(10/07)は tairusalon.com/kabu-salon。新LPは tairusalon.com/kabu-salon/v2。この環境から tairusalon.com は curl で開ける(vercel.app は不可)ので、公開後の確認はこちらで行う
+- 未設定: Vercel の SITE_URL / LEGACY_HOSTS(canonical が相対パスのまま)。通り名は X の表示名が「タイルドマンサックス」(config は「タイルドマン・サックス」)
