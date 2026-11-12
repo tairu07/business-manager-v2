@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Fragment } from "react";
 import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
-import { siteUrl } from "@/config/site";
 import { kabuSalonCopy } from "@/content/kabuSalon";
 import { kabuSalonV2Copy as copy, memberVoices } from "@/content/kabuSalonV2";
 import { Photo, PhotoCredits, photoStyle, resolvePhoto } from "../photos";
+import { shareMetadata } from "../share";
 import "../kabu-salon.css";
 import "./v2.css";
 
@@ -18,8 +18,12 @@ export const metadata: Metadata = {
   description: copy.meta.description,
   // 比較が終わるまで検索には出さない
   robots: { index: false, follow: true },
-  metadataBase: siteUrl(),
-  alternates: { canonical: kabuSalonConfig.urls.lpV2 },
+  ...shareMetadata({
+    title: copy.meta.title,
+    description: copy.meta.description,
+    path: kabuSalonConfig.urls.lpV2,
+    image: kabuSalonConfig.share.images.lpV2,
+  }),
 };
 
 const FONTS_HREF =
@@ -35,7 +39,7 @@ const navLabel = open ? copy.pricing.cta : copy.closed.navCta;
 /** 募集停止中は「今期の募集は終了しました。」を価格の行に足す */
 const priceLine = open
   ? copy.hero.priceLine
-  : `${copy.hero.priceLine}${copy.closed.status}`;
+  : `${copy.hero.priceOnly}${copy.closed.status}`;
 const ctaNote = open ? copy.hero.ctaNote : copy.closed.ctaNote;
 
 const ROMAN = ["i.", "ii.", "iii.", "iv.", "v.", "vi."];
@@ -235,6 +239,7 @@ export default function KabuSalonV2Page() {
               {copy.hero.ctaSecondary}
             </a>
           </div>
+          {open ? null : <p className="hero__after">{kabuSalonCopy.waitlistNote}</p>}
         </div>
         <div className="hero__scroll" aria-hidden="true">
           <span className="hero__scroll-line" />
@@ -426,6 +431,14 @@ export default function KabuSalonV2Page() {
               <br className="br-sm" />
               {copy.pricing.heading[1]}
             </h2>
+            <p className="lead lead--center pricing-lead reveal">
+              {copy.pricing.lead.map((line, i) => (
+                <Fragment key={line}>
+                  {i > 0 ? <br className="br-lg" /> : null}
+                  {line}
+                </Fragment>
+              ))}
+            </p>
             <div className="pricing pricing--single">
               <div className="plan plan--featured reveal">
                 <span className="plan__tag">
@@ -491,16 +504,20 @@ export default function KabuSalonV2Page() {
         <section className={sectionClass()} id="flow">
           <div className="container">
             <Eyebrow en="Flow" jp={kabuSalonCopy.flow.heading} />
-            <h2 className="h2 reveal">申込から、参加まで。</h2>
+            <h2 className="h2 reveal">
+              {open ? kabuSalonCopy.flow.title : kabuSalonCopy.flow.closedTitle}
+            </h2>
             <ol className="precepts reveal">
-              {kabuSalonCopy.flow.steps.map((step, i) => (
-                <li className="precept" key={step}>
-                  <div className="precept__num precept__num--latin" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </div>
-                  <p className="precept__desc">{step}</p>
-                </li>
-              ))}
+              {(open ? kabuSalonCopy.flow.steps : kabuSalonCopy.flow.closedSteps).map(
+                (step, i) => (
+                  <li className="precept" key={step}>
+                    <div className="precept__num precept__num--latin" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </div>
+                    <p className="precept__desc">{step}</p>
+                  </li>
+                )
+              )}
             </ol>
           </div>
         </section>

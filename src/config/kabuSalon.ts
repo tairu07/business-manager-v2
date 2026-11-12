@@ -1,3 +1,5 @@
+import { siteUrl } from "@/config/site";
+
 /**
  * 株分析サロンLPの設定。
  *
@@ -12,8 +14,8 @@ export const kabuSalonConfig = {
   operator: {
     /** LP上の呼び名(一人称・愛称) */
     displayName: "タイちゃん",
-    /** 通り名(要確認: 音声の聞き取りから「タイルドマン・サックス」と推定) */
-    handle: "タイルドマン・サックス",
+    /** 通り名。X の表示名と同じ表記にする(2026/11/01 に本人の X の画面で確認。中黒なし) */
+    handle: "タイルドマンサックス",
     /** 問い合わせ先(未設定なら描画しない) */
     contact: "【問い合わせ先メールアドレス】",
   },
@@ -107,8 +109,34 @@ export const kabuSalonConfig = {
     lp: "/kabu-salon",
     /** 新LP(比較用。検索には出さない) */
     lpV2: "/kabu-salon/v2",
+    /**
+     * LPを公開しているドメイン(X の告知で使っているもの)。
+     * canonical と、シェア画像の絶対URLを組み立てるのに使う。環境変数 SITE_URL があればそちらが優先。
+     */
+    site: "https://tairusalon.com",
+  },
+
+  /**
+   * X などにリンクを貼ったときに出る画像カード(1200×630)。
+   * 画像は scripts/kabu-salon-og.mjs で作る。作り直したら version を上げる(X が古い画像を覚えているため)。
+   */
+  share: {
+    version: 1,
+    width: 1200,
+    height: 630,
+    images: {
+      lp: "/kabu-salon/og/kabu-salon.png",
+      lpV2: "/kabu-salon/og/kabu-salon-v2.png",
+    },
   },
 } as const;
+
+/** LPの公開URLの土台(SITE_URL が正しく設定されていればそれ、無ければ urls.site) */
+export function kabuSalonBaseUrl(
+  env: Record<string, string | undefined> = process.env
+): URL {
+  return siteUrl(env) ?? new URL(kabuSalonConfig.urls.site);
+}
 
 /**
  * 初回0円のローンチ期間内か(日本時間で launchFreeUntil の 23:59:59 まで)。

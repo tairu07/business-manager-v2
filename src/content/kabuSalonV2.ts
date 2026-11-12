@@ -1,4 +1,5 @@
 import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
+import { kabuSalonSharedFaq } from "@/content/kabuSalon";
 
 /**
  * 株分析サロン 新LP(/kabu-salon/v2)の全文言。今のLP(/kabu-salon)とは別に、比較のために置く。
@@ -50,6 +51,8 @@ export const kabuSalonV2Copy = {
       "その過程を、そのまま見せます。",
     ],
     priceLine: `${price}。いつでも解約できます。`,
+    /** 募集停止中は解約の話を出さず、価格だけにする */
+    priceOnly: `${price}。`,
     cta: "申し込む",
     ctaSecondary: "配信の中身を見る",
     ctaNote: "Discordでログインして決済すると、1分ほどで会員の部屋が開きます。",
@@ -72,6 +75,8 @@ export const kabuSalonV2Copy = {
       "毎日スペースで話していた2ヶ月は、",
       "株がいちばん見えていた。",
       "でも、ひとりに戻ったら、続かなかった。",
+      "だから、一緒に調べる部屋を作りました。",
+      "最初の募集で、20人を超える人が入りました。",
     ],
   },
 
@@ -225,6 +230,12 @@ export const kabuSalonV2Copy = {
     en: "Membership",
     jp: "参加の条件",
     heading: ["毎週の配信と、", "質問できる部屋。"],
+    /** この金額で毎月なにが手に入るか(配信の長さは 10/25・10/30 の配信時間から。4週 × 1.5〜2時間) */
+    lead: [
+      "1回の配信は、1時間半〜2時間ほど。",
+      "週1回の約束なので、月に6〜8時間ほど、タイちゃんの分析を隣で見ることになります。",
+      "録画と要約が残り、分からないところはDiscordで聞けます。",
+    ],
     tag: "月額会員",
     limit: `初回はお申込み時に決済し、2ヶ月目からは毎月${pricing.billing.dayOfMonth}日に自動で更新されます。日割りはありません。`,
     includes: [
@@ -277,6 +288,7 @@ export const kabuSalonV2Copy = {
         q: "配信に出られない日はどうなりますか?",
         a: "録画をDiscordに残します。あとから見られます。",
       },
+      ...kabuSalonSharedFaq,
       {
         q: "何人くらいいますか?",
         a: "最初の募集で20人を超えました。目標は200人です。人数が増えても、毎週の配信の中身は変えません。",

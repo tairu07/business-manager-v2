@@ -179,6 +179,56 @@ describe("株分析サロンLP", () => {
     expect(text).not.toContain("組織");
   });
 
+  it("募集停止中は、流れが LINE の追加から始まり、ヒーローに LINE の一言が出る", () => {
+    const { container } = render(<KabuSalonPage />);
+    const steps = Array.from(container.querySelectorAll("#flow .precept__desc")).map(
+      (el) => el.textContent ?? ""
+    );
+    expect(steps).toHaveLength(4);
+    if (kabuSalonConfig.enrollment.open) {
+      expect(steps[0]).toContain("申込ボタンから");
+      expect(container.querySelector(".hero__after")).toBeNull();
+    } else {
+      // ボタンが LINE なのに「申込ボタンから」と案内しない
+      expect(steps[0]).toContain("LINE");
+      expect(steps.join("")).not.toContain("申込ボタンから");
+      expect(container.querySelector("#flow h2")?.textContent).toBe(
+        kabuSalonCopy.flow.closedTitle
+      );
+      expect(container.querySelector(".hero__after")?.textContent).toBe(
+        kabuSalonCopy.waitlistNote
+      );
+    }
+  });
+
+  it("パスポートは本人のロードマップに沿う(図書館・型とツール・IRアルファ)。約束は「予定」と書く", () => {
+    const { container } = render(<KabuSalonPage />);
+    const passport = container.querySelector("#passport")?.textContent ?? "";
+    expect(container.querySelectorAll("#passport .precept")).toHaveLength(3);
+    expect(passport).toContain("IRアルファデータベース");
+    expect(passport).toContain("無料か、特別な価格で提供する予定");
+    expect(passport).toContain("時期や条件は変わることがあります");
+    // 古い約束(次のサロンの割引・note)は出さない
+    expect(passport).not.toContain("次のサロン");
+    expect(passport).not.toContain("会員価格で");
+  });
+
+  it("参加の手間に答える質問(聞くだけ・スマホ・Discord)がある。通り名は X の表記", () => {
+    const { container } = render(<KabuSalonPage />);
+    const questions = Array.from(container.querySelectorAll("#faq .faq__q")).map(
+      (el) => el.textContent ?? ""
+    );
+    for (const q of [
+      "聞くだけでも大丈夫",
+      "スマホだけでも参加",
+      "Discordを使ったことがありません",
+    ]) {
+      expect(questions.some((text) => text.includes(q))).toBe(true);
+    }
+    expect(kabuSalonConfig.operator.handle).toBe("タイルドマンサックス");
+    expect(container.textContent).not.toContain("タイルドマン・サックス");
+  });
+
   it("写真マニフェストの各スロットは alt・寸法を持ち、slot が重複しない", () => {
     const slots = kabuSalonImages.map((m) => m.slot);
     expect(new Set(slots).size).toBe(slots.length);

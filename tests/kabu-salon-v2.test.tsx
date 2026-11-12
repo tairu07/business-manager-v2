@@ -135,6 +135,43 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
     expect(container.querySelector("#roadmap")?.textContent).toMatch(/時期は目安/);
   });
 
+  it("料金の前に「毎月なにが手に入るか」があり、参加の手間に答える質問もある", () => {
+    const { container } = render(<KabuSalonV2Page />);
+    const lead = container.querySelector("#pricing .pricing-lead")?.textContent ?? "";
+    expect(lead).toContain("1時間半〜2時間ほど");
+    expect(lead).toContain("月に6〜8時間ほど");
+    const questions = Array.from(container.querySelectorAll("#faq .faq__q")).map(
+      (el) => el.textContent ?? ""
+    );
+    for (const q of [
+      "聞くだけでも大丈夫",
+      "スマホだけでも参加",
+      "Discordを使ったことがありません",
+    ]) {
+      expect(questions.some((text) => text.includes(q))).toBe(true);
+    }
+  });
+
+  it("募集停止中は、流れが LINE の追加から始まり、価格の行に解約の話を出さない", () => {
+    const { container } = render(<KabuSalonV2Page />);
+    const steps = Array.from(container.querySelectorAll("#flow .precept__desc")).map(
+      (el) => el.textContent ?? ""
+    );
+    expect(steps).toHaveLength(4);
+    const heroNote = container.querySelector(".hero__note")?.textContent ?? "";
+    if (kabuSalonConfig.enrollment.v2Open) {
+      expect(steps[0]).toContain("申込ボタンから");
+      expect(heroNote).toContain("いつでも解約できます");
+      expect(container.querySelector(".hero__after")).toBeNull();
+    } else {
+      expect(steps[0]).toContain("LINE");
+      expect(steps.join("")).not.toContain("申込ボタンから");
+      expect(heroNote).not.toContain("いつでも解約できます");
+      expect(heroNote).toContain("今期の募集は終了しました");
+      expect(container.querySelector(".hero__after")?.textContent).toContain("LINE");
+    }
+  });
+
   it("会員の声は、許可を取った言葉が無いうちは欄ごと出さない", () => {
     const { container } = render(<KabuSalonV2Page />);
     if (memberVoices.length === 0) {

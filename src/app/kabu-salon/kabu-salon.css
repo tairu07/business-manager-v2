@@ -365,6 +365,12 @@ body:has(.ks) {
   justify-content: center;
   flex-wrap: wrap;
 }
+.ks .hero__after {
+  margin-top: 22px;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--kinari-dim);
+}
 .ks .hero__scroll {
   position: absolute;
   bottom: 36px;
@@ -408,6 +414,10 @@ body:has(.ks) {
 .ks.js .hero__cta-group {
   opacity: 0;
   animation: ks-fadeUp 1s ease 1.6s forwards;
+}
+.ks.js .hero__after {
+  opacity: 0;
+  animation: ks-fadeUp 1s ease 1.8s forwards;
 }
 .ks.js .hero__scroll {
   opacity: 0;
@@ -1532,6 +1542,7 @@ body:has(.ks) {
   .ks.js .hero__sub,
   .ks.js .hero__note,
   .ks.js .hero__cta-group,
+  .ks.js .hero__after,
   .ks.js .hero__scroll {
     opacity: 1;
     transform: none;
