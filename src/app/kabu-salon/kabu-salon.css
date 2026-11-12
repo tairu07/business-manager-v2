@@ -1275,6 +1275,22 @@ body:has(.ks) {
   padding-left: 24px;
   padding-right: 24px;
 }
+/* 料金の見出しの下の一言(両方のLPで使う)。広い画面では文ごとに改行、スマホでは続けて流す */
+.ks .pricing-lead {
+  max-width: 760px;
+  margin-top: 28px;
+}
+.ks .br-lg {
+  display: inline;
+}
+@media (max-width: 600px) {
+  .ks .br-lg {
+    display: none;
+  }
+  .ks .pricing-lead {
+    text-align: left;
+  }
+}
 .ks .pricing-note {
   margin: 36px 0 0;
   font-size: 0.78rem;

@@ -326,9 +326,11 @@ export default function KabuSalonV2Page() {
                 </li>
               ))}
             </ol>
+            <p className="prose reveal">{copy.contents.also}</p>
             <div className="note-box rounds reveal">
               <p className="rounds__title">{copy.contents.rounds.title}</p>
               <p>{copy.contents.rounds.body}</p>
+              <p className="rounds__join">{copy.contents.rounds.join}</p>
             </div>
             <p className="values-note reveal">※ {copy.contents.note}</p>
           </div>

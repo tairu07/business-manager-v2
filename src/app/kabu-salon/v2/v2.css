@@ -50,6 +50,9 @@
   color: var(--gold);
   margin-bottom: 10px;
 }
+.ks-v2 .rounds__join {
+  margin-top: 10px;
+}
 
 /* これからの1年(時期と中身の2列) */
 .ks-v2 .roadmap {
@@ -75,15 +78,6 @@
   font-size: 0.95rem;
   line-height: 2;
   color: var(--kinari);
-}
-
-/* 料金の前の一言。広い画面では文ごとに改行、スマホでは続けて流す */
-.ks-v2 .pricing-lead {
-  max-width: 760px;
-  margin-top: 28px;
-}
-.ks-v2 .br-lg {
-  display: inline;
 }
 
 /* 本文の段落 */
@@ -186,12 +180,6 @@
   }
 }
 @media (max-width: 600px) {
-  .ks-v2 .br-lg {
-    display: none;
-  }
-  .ks-v2 .pricing-lead {
-    text-align: left;
-  }
   .ks.ks-v2 .values--four {
     grid-template-columns: 1fr;
   }

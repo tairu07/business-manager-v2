@@ -215,6 +215,12 @@ export default function KabuSalonPage() {
   // 背景色は並び順で交互にする(節を入れ替えても崩れないように、描画順で数える)
   let sectionCount = 0;
   const sectionClass = () => (sectionCount++ % 2 ? "section section--alt" : "section");
+  // 初回の決済と日割りなしの説明は、通常価格で募集中のときだけ価格カードの中に出す。
+  // 募集停止中・先行価格中はカードに別の案内が入るので、カードの下の注記に回す。
+  // 初回0円の期間中は「申込時に決済」と食い違うので、どちらにも出さず launchNote に任せる。
+  const launchFree = isLaunchFreePeriod();
+  const billingInCard = copy.pricing.cardNote === null && !launchFree;
+  const cardNote = copy.pricing.cardNote ?? (launchFree ? null : copy.pricing.billing);
   // 写真はファイルの有無で出し分ける(無ければ写真なしのレイアウトのまま)
   const photos = {
     okami: resolvePhoto("okami"),
@@ -559,6 +565,14 @@ export default function KabuSalonPage() {
               <br className="br-sm" />
               <span className="gold">買って</span>もらう値段。
             </h2>
+            <p className="lead lead--center pricing-lead reveal">
+              {copy.pricing.lead.map((line, i) => (
+                <Fragment key={line}>
+                  {i > 0 ? <br className="br-lg" /> : null}
+                  {line}
+                </Fragment>
+              ))}
+            </p>
             <div className="pricing pricing--single">
               <div className="plan plan--featured reveal">
                 <span className="plan__tag">
@@ -575,19 +589,21 @@ export default function KabuSalonPage() {
                   <small>/ 月(税抜)</small>
                 </div>
                 <div className="plan__tax">税込 {yen(withTax(currentPrice))}</div>
-                <div className="plan__limit">
-                  {kabuSalonConfig.enrollment.open && pricing.earlyBirdOpen ? (
-                    <>
-                      先着{pricing.earlyBirdSeats}名の先行価格。
-                      <br />
-                      通常 {yen(pricing.regular)}(税込 {yen(withTax(pricing.regular))})
-                      <br />
-                      <BreakAfter text={copy.pricing.notes[0]} at="限り" />
-                    </>
-                  ) : (
-                    copy.pricing.notes[0]
-                  )}
-                </div>
+                {cardNote ? (
+                  <div className="plan__limit">
+                    {kabuSalonConfig.enrollment.open && pricing.earlyBirdOpen ? (
+                      <>
+                        先着{pricing.earlyBirdSeats}名の先行価格。
+                        <br />
+                        通常 {yen(pricing.regular)}(税込 {yen(withTax(pricing.regular))})
+                        <br />
+                        <BreakAfter text={cardNote} at="限り" />
+                      </>
+                    ) : (
+                      cardNote
+                    )}
+                  </div>
+                ) : null}
                 <ul className="plan__list">
                   {copy.offer.items.map((item) => (
                     <li key={item.title}>{item.title}</li>
@@ -601,11 +617,14 @@ export default function KabuSalonPage() {
               </div>
             </div>
             <div className="pricing-note reveal">
-              {isLaunchFreePeriod() ? (
+              {launchFree ? (
                 <p className="pricing-note__launch">※ {copy.pricing.launchNote}</p>
-              ) : null}
-              <p>※ {copy.pricing.notes[1]}</p>
-              <p>※ {copy.pricing.notes[2]}</p>
+              ) : billingInCard ? null : (
+                <p>※ {copy.pricing.billing}</p>
+              )}
+              {copy.pricing.notes.map((note) => (
+                <p key={note}>※ {note}</p>
+              ))}
             </div>
           </div>
         </section>

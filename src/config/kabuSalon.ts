@@ -121,7 +121,7 @@ export const kabuSalonConfig = {
    * 画像は scripts/kabu-salon-og.mjs で作る。作り直したら version を上げる(X が古い画像を覚えているため)。
    */
   share: {
-    version: 1,
+    version: 2,
     width: 1200,
     height: 630,
     images: {

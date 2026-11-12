@@ -68,11 +68,11 @@ describe("株分析サロンLP", () => {
       expect(amounts).toEqual([regular]);
       const text = document.body.textContent ?? "";
       expect(text).not.toContain(`先着${kabuSalonConfig.pricing.earlyBirdSeats}名`);
-      expect(text).toContain(
-        kabuSalonConfig.enrollment.open
-          ? "先行価格の受付は終了しました"
-          : "今期の募集は終了しました"
-      );
+      // 募集中のカードには「先行価格は終わった」とは書かず、初回の決済の条件を出す
+      expect(text).not.toContain("先行価格の受付は終了しました");
+      if (!kabuSalonConfig.enrollment.open) {
+        expect(text).toContain("今期の募集は終了しました");
+      }
       for (const link of screen.queryAllByRole("link", { name: /申し込む/ })) {
         expect(link.textContent).not.toContain("先行価格");
       }
@@ -82,11 +82,20 @@ describe("株分析サロンLP", () => {
   it("料金の注記: 課金日は毎月1日、初回0円の案内はローンチ期間中だけ出る", () => {
     const { container } = render(<KabuSalonPage />);
     const text = container.textContent ?? "";
-    expect(text).toContain("課金日は毎月1日");
+    expect(text).toContain("課金日である毎月1日の前日まで");
     expect(container.querySelectorAll(".pricing-note__launch").length).toBe(
       isLaunchFreePeriod() ? 1 : 0
     );
     if (isLaunchFreePeriod()) expect(text).toContain(kabuSalonCopy.pricing.launchNote);
+    // 初回の決済と日割りなしは、料金の欄に1回だけ出る(初回0円の期間中は launchNote に任せる)
+    const pricingText = container.querySelector("#pricing")?.textContent ?? "";
+    expect(pricingText.split(kabuSalonCopy.pricing.billing).length - 1).toBe(
+      isLaunchFreePeriod() ? 0 : 1
+    );
+    // 見出しの下に、払う側が受け取るものを書く
+    expect(container.querySelector("#pricing .pricing-lead")?.textContent).toContain(
+      "受け取るのは、その分析の過程そのものです。"
+    );
     // 参加までの流れは「Discordログイン → 決済 → 自動付与」
     expect(text).toContain("Discordでログイン");
     expect(text).not.toContain("決済ID");
@@ -219,12 +228,19 @@ describe("株分析サロンLP", () => {
       (el) => el.textContent ?? ""
     );
     for (const q of [
+      "出られない日",
       "聞くだけでも大丈夫",
       "スマホだけでも参加",
       "Discordを使ったことがありません",
+      "月の途中で入ったら",
+      "解約はいつでも",
     ]) {
-      expect(questions.some((text) => text.includes(q))).toBe(true);
+      expect(questions.filter((text) => text.includes(q))).toHaveLength(1);
     }
+    // 「元は取れますか」には、約束できない理由と解約のしやすさで答える(入るなとは言わない)
+    const faqText = container.querySelector("#faq")?.textContent ?? "";
+    expect(faqText).toContain("株でいくら増えるかは、誰にも約束できない");
+    expect(faqText).not.toContain("入らない方がいい");
     expect(kabuSalonConfig.operator.handle).toBe("タイルドマンサックス");
     expect(container.textContent).not.toContain("タイルドマン・サックス");
   });

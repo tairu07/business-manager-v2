@@ -107,8 +107,16 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
   it("中心の約束(自分で見つける・探し方)と、配信の実際の中身5つが出る", () => {
     const { container } = render(<KabuSalonV2Page />);
     const text = container.textContent ?? "";
+    // 「見つけられる人へ」は、すでに見つけられる人宛てにも読めるので使わない
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(
-      "バリュー株を、自分で見つけられる人へ。"
+      "バリュー株を、自分で見つけたい人へ。"
+    );
+    expect(metadata.title).toEqual({
+      absolute: expect.stringContaining("バリュー株を、自分で見つけたい人へ"),
+    });
+    // 2節目の見出しは、1行目の見出しと同じ言葉を繰り返さない
+    expect(container.querySelector("#problem h2")?.textContent).toBe(
+      "ひとつでも、当てはまるなら。"
     );
     expect(text).toContain("答えではなく、探し方を見せる。");
     expect(container.querySelectorAll("#contents .step")).toHaveLength(5);
@@ -129,7 +137,13 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
       expect(text).toContain(t);
     }
     expect(text).toContain("1回戦目は、最後に17銘柄まで絞り込みました");
+    // 途中から入る人の不安には、回戦の説明のすぐ下で答える
+    expect(container.querySelector("#contents .rounds__join")?.textContent).toContain(
+      "途中から入った人も"
+    );
     expect(container.querySelectorAll("#roadmap .roadmap__item")).toHaveLength(4);
+    // 「これから1ヶ月」がいつからかを注記で示す
+    expect(container.querySelector("#roadmap")?.textContent).toContain("2026年11月時点");
     expect(text).toContain("投資分析アナリストマスター");
     expect(container.querySelector("#roadmap")?.textContent).toMatch(/予定/);
     expect(container.querySelector("#roadmap")?.textContent).toMatch(/時期は目安/);
@@ -140,16 +154,46 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
     const lead = container.querySelector("#pricing .pricing-lead")?.textContent ?? "";
     expect(lead).toContain("1時間半〜2時間ほど");
     expect(lead).toContain("月に6〜8時間ほど");
+    expect(lead).toContain("質問にはタイちゃん本人が");
     const questions = Array.from(container.querySelectorAll("#faq .faq__q")).map(
       (el) => el.textContent ?? ""
     );
     for (const q of [
+      "出られない日",
       "聞くだけでも大丈夫",
       "スマホだけでも参加",
       "Discordを使ったことがありません",
+      "月の途中で入ったら",
+      "解約はいつでも",
     ]) {
-      expect(questions.some((text) => text.includes(q))).toBe(true);
+      expect(questions.filter((text) => text.includes(q))).toHaveLength(1);
     }
+  });
+
+  it("値段に見合うかの迷いに答える(スペースとの違い・元は取れるか)。利益は約束しない", () => {
+    const { container } = render(<KabuSalonV2Page />);
+    const faq = new Map(
+      Array.from(container.querySelectorAll("#faq .faq__item")).map((el) => [
+        el.querySelector(".faq__q")?.textContent?.replace(/^Q\./, "") ?? "",
+        el.querySelector(".faq__a")?.textContent ?? "",
+      ])
+    );
+    expect(faq.get("無料のスペースと、何が違いますか?")).toContain(
+      "毎週のZoom配信を約束"
+    );
+    const roi = faq.get("サロン代の元は取れますか?") ?? "";
+    expect(roi).toMatch(/^約束はできません/);
+    expect(roi).toContain("課金日の前日まで");
+    // 料金の一覧にある項目は、本文のどこかで説明する
+    const contents = container.querySelector("#contents")?.textContent ?? "";
+    expect(contents).toContain("論文を読む回");
+    expect(contents).toContain("コーチ");
+    // 「聞くだけでも大丈夫」と食い違う「自分で調べる時間は、取れない」は、向かない人に入れない
+    const notFor = container.querySelector(".fit__col--no")?.textContent ?? "";
+    expect(notFor).not.toContain("調べる時間");
+    expect(notFor).toContain("最後の判断を、人に任せたい");
+    // 同じ銘柄を数ヶ月追うのに「来週には古くなる」とは書かない
+    expect(container.querySelector("#ps")?.textContent).not.toContain("来週には");
   });
 
   it("募集停止中は、流れが LINE の追加から始まり、価格の行に解約の話を出さない", () => {

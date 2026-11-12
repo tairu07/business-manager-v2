@@ -25,7 +25,7 @@ export const CARDS = [
   },
   {
     file: "kabu-salon-v2.png",
-    lines: ["バリュー株を、", "自分で見つけられる人へ。"],
+    lines: ["バリュー株を、", "自分で見つけたい人へ。"],
     gold: "自分で",
     sub: "答えではなく、探し方を見せる。毎週、Zoomで配信。",
   },
