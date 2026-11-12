@@ -27,6 +27,20 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
     for (const link of ctas) expect(link).toHaveAttribute("href", expected);
     if (enrollment.v2Open) {
       for (const link of ctas) expect(link.textContent).toBe("申し込む");
+    } else {
+      // 募集停止中: ボタンは全部 LINE、決済ページへのリンクは1本も出さない
+      for (const link of ctas) expect(link.textContent).toMatch(/LINE/);
+      const hrefs = Array.from(container.querySelectorAll("a")).map((a) =>
+        a.getAttribute("href")
+      );
+      expect(hrefs).not.toContain(urls.apply);
+      expect(screen.queryAllByRole("link", { name: /申し込む/ })).toHaveLength(0);
+      const text = container.textContent ?? "";
+      expect(text).toContain("今期の募集は終了");
+      expect(container.querySelector(".plan__tag")?.textContent).toBe("募集終了");
+      expect(text).toContain("次の募集は、LINEで最初にお知らせします。");
+      // 「決済すると1分で部屋が開く」の案内は、ボタンの下からは消す
+      expect(container.querySelector(".final__note")?.textContent).not.toContain("決済");
     }
   });
 

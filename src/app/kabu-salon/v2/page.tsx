@@ -28,8 +28,15 @@ const FONTS_HREF =
 const { pricing, urls, name } = kabuSalonConfig;
 
 /** 申込ボタンの行き先。新LPは今のLPとは別の切り替え(enrollment.v2Open)に従う */
-const ctaHref = kabuSalonConfig.enrollment.v2Open ? urls.apply : urls.waitlist;
-const ctaLabel = kabuSalonConfig.enrollment.v2Open ? copy.pricing.cta : "LINE@で待機する";
+const open = kabuSalonConfig.enrollment.v2Open;
+const ctaHref = open ? urls.apply : urls.waitlist;
+const ctaLabel = open ? copy.pricing.cta : copy.closed.cta;
+const navLabel = open ? copy.pricing.cta : copy.closed.navCta;
+/** 募集停止中は「今期の募集は終了しました。」を価格の行に足す */
+const priceLine = open
+  ? copy.hero.priceLine
+  : `${copy.hero.priceLine}${copy.closed.status}`;
+const ctaNote = open ? copy.hero.ctaNote : copy.closed.ctaNote;
 
 const ROMAN = ["i.", "ii.", "iii.", "iv.", "v.", "vi."];
 
@@ -187,7 +194,7 @@ export default function KabuSalonV2Page() {
             料金
           </a>
           <a className="nav__cta" href={ctaHref}>
-            {ctaLabel}
+            {navLabel}
           </a>
         </div>
       </nav>
@@ -197,7 +204,9 @@ export default function KabuSalonV2Page() {
         <div className="hero__inner">
           <div className="hero__badge">
             <span className="hero__badge-dot" aria-hidden="true" />
-            <span className="hero__badge-text">{copy.hero.badge}</span>
+            <span className="hero__badge-text">
+              {open ? copy.hero.badge : copy.closed.badge}
+            </span>
           </div>
           <h1 className="hero__title">
             {copy.hero.heading[0]}
@@ -216,7 +225,7 @@ export default function KabuSalonV2Page() {
             {copy.hero.lead[2]}
           </p>
           <p className="hero__note">
-            <Sentences text={copy.hero.priceLine} />
+            <Sentences text={priceLine} />
           </p>
           <div className="hero__cta-group">
             <a className="btn btn--primary" href={ctaHref} id="cta-hero">
@@ -419,7 +428,9 @@ export default function KabuSalonV2Page() {
             </h2>
             <div className="pricing pricing--single">
               <div className="plan plan--featured reveal">
-                <span className="plan__tag">{copy.pricing.tag}</span>
+                <span className="plan__tag">
+                  {open ? copy.pricing.tag : copy.closed.tag}
+                </span>
                 <div className="plan__name">{name}</div>
                 <div className="plan__name-en">{copy.handle}</div>
                 <div className="plan__price">
@@ -530,7 +541,7 @@ export default function KabuSalonV2Page() {
               <Gold text={copy.final.heading[1]} keyword={copy.final.gold} />
             </h2>
             <p className="final__sub">
-              <Sentences text={copy.hero.priceLine} />
+              <Sentences text={priceLine} />
               <br />
               <BreakAfter text={copy.final.sub} at="。" mobileOnly />
             </p>
@@ -538,7 +549,7 @@ export default function KabuSalonV2Page() {
               {ctaLabel}
             </a>
             <p className="final__note">
-              <BreakAfter text={copy.hero.ctaNote} at="、" mobileOnly />
+              <BreakAfter text={ctaNote} at="、" mobileOnly />
             </p>
           </div>
         </section>

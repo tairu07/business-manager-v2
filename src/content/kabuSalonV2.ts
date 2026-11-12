@@ -302,6 +302,16 @@ export const kabuSalonV2Copy = {
     sub: "見ているだけでは、身につかない。だから毎週、一緒に探します。",
   },
 
+  /** 募集停止中(config の enrollment.v2Open が false)の表示 */
+  closed: {
+    badge: "MEMBERSHIP — 今期の募集は終了",
+    status: "今期の募集は終了しました。",
+    cta: "LINE@で待機する",
+    navCta: "LINEで待機",
+    ctaNote: "次の募集は、LINEで最初にお知らせします。",
+    tag: "募集終了",
+  },
+
   /** 追伸: いちばん伝えたい価値の再提示と、続ける本当の理由 */
   postscript: {
     label: "追伸",

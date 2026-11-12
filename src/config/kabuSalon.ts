@@ -67,8 +67,9 @@ export const kabuSalonConfig = {
      * 新LP(/kabu-salon/v2)の申込ボタンを開くか。今のLPの open とは別に切り替える。
      * true の間、新LPのボタンは urls.apply(通常価格の申込ページ)へ向く。false なら LINE 待機へ。
      * 2026/10/31 新LPは「募集を再開して直接申し込んでもらう」想定で作成(本人の指示)。
+     * 2026/11/12 募集期間が一旦終了。両方のLPを LINE 待機に戻す(本人の指示)。
      */
-    v2Open: true,
+    v2Open: false,
   },
 
   /**

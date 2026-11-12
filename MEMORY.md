@@ -48,3 +48,4 @@
 - 2026/10/31 「中学生のころから、バリュー投資を続けてきました」は新LPに載せてよいと大成が確認済み
 - 2026/11/01 公開ドメインは tairusalon.com(Vercel、同じプロジェクト)。X の告知(10/07)は tairusalon.com/kabu-salon。新LPは tairusalon.com/kabu-salon/v2。この環境から tairusalon.com は curl で開ける(vercel.app は不可)ので、公開後の確認はこちらで行う
 - 未設定: Vercel の SITE_URL / LEGACY_HOSTS(canonical が相対パスのまま)。通り名は X の表示名が「タイルドマンサックス」(config は「タイルドマン・サックス」)
+- 2026/11/12 募集期間が一旦終了。新LPも enrollment.v2Open=false にして、両方のLPをLINE待機(lin.ee/OmdMRVP)に戻した。新LPは停止中、バッジ・価格の行・料金の札・最後の案内も「募集終了」表示に切り替わる。再開は open / v2Open を true に戻すだけ
