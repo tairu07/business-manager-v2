@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import KabuSalonV2Page, { metadata } from "@/app/kabu-salon/v2/page";
+import KabuSalonV2Page, { metadata } from "@/app/kabu-salon/page";
 import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 import { kabuSalonV2Copy, memberVoices } from "@/content/kabuSalonV2";
 
@@ -17,15 +17,16 @@ function collectStrings(value: unknown, out: string[] = []): string[] {
 
 const CTA_SELECTOR = ".nav__cta, #cta-hero, #cta-pricing, #cta-final, #cta-ps";
 
-describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
-  it("CTAボタン5本は、新LPの切り替えに従って申込ページ(またはLINE)へ向く", () => {
+// 2026/11/13 から新LP(v2 のデザイン)が本線。前のLPは /kabu-salon/v1(tests/kabu-salon-v1.test.tsx)
+describe("株分析サロン 本線のLP(/kabu-salon。新LP)", () => {
+  it("CTAボタン5本は、本線の切り替えに従って申込ページ(またはLINE)へ向く", () => {
     const { container } = render(<KabuSalonV2Page />);
     const { enrollment, urls } = kabuSalonConfig;
     const ctas = Array.from(container.querySelectorAll<HTMLAnchorElement>(CTA_SELECTOR));
     expect(ctas).toHaveLength(5);
-    const expected = enrollment.v2Open ? urls.apply : urls.waitlist;
+    const expected = enrollment.open ? urls.apply : urls.waitlist;
     for (const link of ctas) expect(link).toHaveAttribute("href", expected);
-    if (enrollment.v2Open) {
+    if (enrollment.open) {
       for (const link of ctas) expect(link.textContent).toBe("申し込む");
     } else {
       // 募集停止中: ボタンは全部 LINE、決済ページへのリンクは1本も出さない
@@ -44,12 +45,13 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
     }
   });
 
-  it("今のLPの「募集終了」の切り替えとは独立している", () => {
-    // 今のLPは enrollment.open、新LPは enrollment.v2Open を見る
+  it("前のLPの「募集終了」の切り替えとは独立している", () => {
+    // 本線(新LP)は enrollment.open、前のLPは enrollment.v1Open を見る
     expect(kabuSalonConfig.enrollment).toHaveProperty("open");
-    expect(kabuSalonConfig.enrollment).toHaveProperty("v2Open");
-    expect(kabuSalonConfig.urls.lpV2).toBe("/kabu-salon/v2");
+    expect(kabuSalonConfig.enrollment).toHaveProperty("v1Open");
+    expect(kabuSalonConfig.enrollment).not.toHaveProperty("v2Open");
     expect(kabuSalonConfig.urls.lp).toBe("/kabu-salon");
+    expect(kabuSalonConfig.urls.lpV1).toBe("/kabu-salon/v1");
   });
 
   it("価格は税込併記で、課金日と日割りなしの条件が書かれている", () => {
@@ -203,7 +205,7 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
     );
     expect(steps).toHaveLength(4);
     const heroNote = container.querySelector(".hero__note")?.textContent ?? "";
-    if (kabuSalonConfig.enrollment.v2Open) {
+    if (kabuSalonConfig.enrollment.open) {
       expect(steps[0]).toContain("申込ボタンから");
       expect(heroNote).toContain("いつでも解約できます");
       expect(container.querySelector(".hero__after")).toBeNull();
@@ -227,9 +229,10 @@ describe("株分析サロン 新LP(/kabu-salon/v2)", () => {
     }
   });
 
-  it("比較が終わるまで検索に出さない(noindex)、正規URLは新LP自身", () => {
-    expect(metadata.robots).toMatchObject({ index: false });
-    expect(metadata.alternates?.canonical).toBe("/kabu-salon/v2");
+  it("本線なので検索に出す。正規URLは告知で使っている /kabu-salon", () => {
+    expect(metadata.robots).toMatchObject({ index: true });
+    expect(metadata.alternates?.canonical).toBe("/kabu-salon");
+    expect(metadata.alternates?.canonical).toBe(kabuSalonConfig.urls.lp);
   });
 
   it("特商法・プライバシーポリシー・利用規約へのリンクがある", () => {

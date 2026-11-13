@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { legacyHostRedirects, siteUrl } from "@/config/site";
+import { legacyHostRedirects, movedPathRedirects, siteUrl } from "@/config/site";
 
 describe("公開ドメイン設定(SITE_URL / LEGACY_HOSTS)", () => {
   it("SITE_URL は https のオリジンだけを受け付ける", () => {
@@ -44,5 +44,22 @@ describe("公開ドメイン設定(SITE_URL / LEGACY_HOSTS)", () => {
         LEGACY_HOSTS: "kabu.example.jp,bad host,/x",
       })
     ).toEqual([]);
+  });
+});
+
+describe("場所を移したページの転送", () => {
+  it("以前の新LPのURL(/kabu-salon/v2)は、本線(/kabu-salon)へ一時転送する", () => {
+    const redirects = movedPathRedirects();
+    expect(redirects).toContainEqual({
+      source: "/kabu-salon/v2",
+      destination: "/kabu-salon",
+      permanent: false,
+    });
+    // 転送先が別の転送元になっていない(転送が続いたり、輪になったりしない)
+    const sources = new Set(redirects.map((r) => r.source));
+    for (const r of redirects) {
+      expect(sources.has(r.destination)).toBe(false);
+      expect(r.destination.startsWith("/")).toBe(true);
+    }
   });
 });

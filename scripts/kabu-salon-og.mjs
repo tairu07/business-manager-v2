@@ -2,7 +2,7 @@
 //
 //   node scripts/kabu-salon-og.mjs
 //
-// - 出力: public/kabu-salon/og/kabu-salon.png(今のLP)、kabu-salon-v2.png(新LP)。1200×630
+// - 出力: public/kabu-salon/og/kabu-salon-v2.png(本線=新LP)、kabu-salon.png(前のLP)。1200×630
 // - Playwright はグローバルに入っているものを使う(このリポジトリの依存には入れていない)
 // - 見出しを変えたら、下の CARDS も同じ文言に直して作り直し、
 //   src/config/kabuSalon.ts の share.version を上げる(X が古い画像を覚えているため)

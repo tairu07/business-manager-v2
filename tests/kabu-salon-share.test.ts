@@ -2,7 +2,7 @@ import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { metadata as lpMetadata } from "@/app/kabu-salon/page";
-import { metadata as lpV2Metadata } from "@/app/kabu-salon/v2/page";
+import { metadata as lpV1Metadata } from "@/app/kabu-salon/v1/page";
 import { kabuSalonBaseUrl, kabuSalonConfig } from "@/config/kabuSalon";
 import { kabuSalonCopy } from "@/content/kabuSalon";
 import { kabuSalonV2Copy } from "@/content/kabuSalonV2";
@@ -31,8 +31,8 @@ describe("株分析サロンLP シェア時のカード(X など)", () => {
   });
 
   it.each([
-    ["今のLP", lpMetadata, urls.lp, share.images.lp, kabuSalonCopy.meta],
-    ["新LP", lpV2Metadata, urls.lpV2, share.images.lpV2, kabuSalonV2Copy.meta],
+    ["本線(新LP)", lpMetadata, urls.lp, share.images.lp, kabuSalonV2Copy.meta],
+    ["前のLP", lpV1Metadata, urls.lpV1, share.images.lpV1, kabuSalonCopy.meta],
   ] as const)(
     "%s: 大きい画像カードの情報が揃っている",
     (_name, meta, lpPath, image, copy) => {
@@ -70,5 +70,21 @@ describe("株分析サロンLP シェア時のカード(X など)", () => {
       expect(script).toContain(`"${line}"`);
     }
     expect(script).toContain(`"${kabuSalonConfig.name}"`);
+  });
+
+  it("本線には新LPの見出しのカード、前のLPには前のLPの見出しのカードが付く(取り違えない)", () => {
+    const script = readFileSync(path.join(ROOT, "scripts", "kabu-salon-og.mjs"), "utf8");
+    /** スクリプトの CARDS から、そのファイルに描く見出しの行を読む */
+    const cardLines = (image: string): string[] => {
+      const file = path.basename(image).replace(/\./g, "\\.");
+      const found = script.match(
+        new RegExp(`file: "${file}",\\s*lines: (\\[[^\\]]*\\])`)
+      );
+      expect(found).not.toBeNull();
+      return JSON.parse(found?.[1] ?? "[]") as string[];
+    };
+    expect(cardLines(share.images.lp)).toEqual([...kabuSalonV2Copy.hero.heading]);
+    expect(cardLines(share.images.lpV1)).toEqual([...kabuSalonCopy.hero.heading]);
+    expect(share.images.lp).not.toBe(share.images.lpV1);
   });
 });

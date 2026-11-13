@@ -60,3 +60,12 @@
 - 構成: FAQ は content/kabuSalon.ts の kabuSalonSharedFaq(参加の手間)と kabuSalonBillingFaq(料金・解約)を両LPで共有。料金の見出し下の一言(.pricing-lead)は共通CSSへ
 - 未解決(弁護士に確認を勧める。勝手に直していない): 会員制で個別銘柄の分析を出す形そのもの(金融庁の監督指針)、シリウスビジョンの銘柄名と売買価格、17銘柄の定点観測、前のLPの「いくらで買えば下値が限られるか」「出来高で利確を判断」
 - ハマり: 配信で画面を映しているかは録音から確認できなかった → LPに「画面を見せる」とは書いていない
+
+## 2026/11/13 本線を新LPに差し替え
+
+- 意思決定(大成「うん変えて」): X で告知している tairusalon.com/kabu-salon を新LP(「バリュー株を、自分で見つけたい人へ」)にした。検索にも出す(index)。前のLP(「タイちゃんの思考を、そのまま聞ける部屋」)は /kabu-salon/v1 に残し、noindex。以前の新LPのURL /kabu-salon/v2 は本線へ一時転送(307。src/config/site.ts の movedPaths)
+- 構成: src/app/kabu-salon/page.tsx = 新LP(文言 content/kabuSalonV2.ts、追加CSS v2.css)。src/app/kabu-salon/v1/page.tsx = 前のLP(文言 content/kabuSalon.ts)。コードに残る「V2」「v2」は新LPのデザインの名前で、URLではない。テストは tests/kabu-salon-v2.test.tsx(本線)と tests/kabu-salon-v1.test.tsx(前のLP)
+- 切り替え: enrollment.open は今も「本線のボタン」(=新LP)。前のLPは enrollment.v1Open。募集再開は open を true に戻す(前のLPも開けるなら v1Open も)。以前の v2Open は無くした
+- 呼び方の注意: これより上のメモの「今のLP」は前のLP(今の /kabu-salon/v1)、「新LP」は今の本線のこと
+- シェアカード: 本線は kabu-salon-v2.png、前のLPは kabu-salon.png(ファイル名はデザインの名前のまま)。取り違えはテストで見ている
+- ハマり: ページのファイルを移した直後は .next/types に古いパスが残り、tsc が「v2/page.js が無い」で落ちる → npm run build をやり直すと直る

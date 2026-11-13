@@ -26,6 +26,22 @@ export function siteUrl(env: Env = process.env): URL | undefined {
   }
 }
 
+type PathRedirect = { source: string; destination: string; permanent: boolean };
+
+/**
+ * サイト内で場所を移したページ(古いURL → 今のURL)。
+ * 2026/11/13 本線(/kabu-salon)を新LPに差し替えた。それまで新LPを置いていた /kabu-salon/v2 は本線へ送る。
+ */
+export const movedPaths = [
+  { source: "/kabu-salon/v2", destination: "/kabu-salon" },
+] as const;
+
+/** movedPaths を next.config 用の redirects にする */
+export function movedPathRedirects(): PathRedirect[] {
+  // 戻すことになってもブラウザに永久キャッシュが残らないよう、一時転送(307)
+  return movedPaths.map((moved) => ({ ...moved, permanent: false }));
+}
+
 type HostRedirect = {
   source: string;
   has: { type: "host"; value: string }[];

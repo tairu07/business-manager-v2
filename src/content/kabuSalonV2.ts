@@ -2,7 +2,8 @@ import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 import { kabuSalonBillingFaq, kabuSalonSharedFaq } from "@/content/kabuSalon";
 
 /**
- * 株分析サロン 新LP(/kabu-salon/v2)の全文言。今のLP(/kabu-salon)とは別に、比較のために置く。
+ * 株分析サロン 新LP の全文言。2026/11/13 から本線(/kabu-salon)で公開している(本人の指示)。
+ * それまでは /kabu-salon/v2 に置き、前のLP(kabuSalon.ts。今は /kabu-salon/v1)と並べて比べていた。
  *
  * 2026/10/31 方針(本人の言葉より):
  * - 集めたいのは、タイちゃんのファンと、知的好奇心のある人
@@ -319,7 +320,7 @@ export const kabuSalonV2Copy = {
     sub: "見ているだけでは、身につかない。だから毎週、一緒に探します。",
   },
 
-  /** 募集停止中(config の enrollment.v2Open が false)の表示 */
+  /** 募集停止中(config の enrollment.open が false)の表示 */
   closed: {
     badge: "MEMBERSHIP — 今期の募集は終了",
     status: "今期の募集は終了しました。",

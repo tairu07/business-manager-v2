@@ -59,19 +59,19 @@ export const kabuSalonConfig = {
   },
 
   /**
-   * 新規募集の受付中か。false の間、申込ボタンは LINE 公式アカウント(urls.waitlist)への
-   * 待機ボタンに切り替わる。再開するときは true に戻すだけ(urls.apply は残してある)。
-   * 2026/10/13 今期の募集終了。
+   * 新規募集の受付中か(本線 /kabu-salon の申込ボタン)。false の間、申込ボタンは LINE 公式アカウント
+   * (urls.waitlist)への待機ボタンに切り替わる。再開するときは true に戻すだけ(urls.apply は残してある)。
+   * true の間、ボタンは urls.apply(通常価格の申込ページ)へ向く。
+   * 2026/10/13 今期の募集終了。2026/11/12 募集期間が一旦終了し、両方のLPを LINE 待機に戻した(本人の指示)。
+   * 2026/11/13 本線を新LPに差し替えた(本人の指示)。open は差し替えの前も後も「本線のボタン」を指す。
    */
   enrollment: {
     open: false,
     /**
-     * 新LP(/kabu-salon/v2)の申込ボタンを開くか。今のLPの open とは別に切り替える。
-     * true の間、新LPのボタンは urls.apply(通常価格の申込ページ)へ向く。false なら LINE 待機へ。
-     * 2026/10/31 新LPは「募集を再開して直接申し込んでもらう」想定で作成(本人の指示)。
-     * 2026/11/12 募集期間が一旦終了。両方のLPを LINE 待機に戻す(本人の指示)。
+     * 前のLP(/kabu-salon/v1)の申込ボタンを開くか。本線の open とは別に切り替える。
+     * 比較用に残しているページなので、ふだんは false(LINE 待機)のままでよい。
      */
-    v2Open: false,
+    v1Open: false,
   },
 
   /**
@@ -105,10 +105,17 @@ export const kabuSalonConfig = {
     tokushoho: "/kabu-salon/tokushoho",
     /** 利用規約(サイト内ページ) */
     terms: "/kabu-salon/terms",
-    /** LP本体 */
+    /**
+     * LP本体(本線。X の告知で使っているURL)。
+     * 2026/11/13 から新LP(「バリュー株を、自分で見つけたい人へ」。文言は content/kabuSalonV2.ts)。
+     * それまで新LPを置いていた /kabu-salon/v2 は、ここへ転送する(config/site.ts の movedPaths)。
+     */
     lp: "/kabu-salon",
-    /** 新LP(比較用。検索には出さない) */
-    lpV2: "/kabu-salon/v2",
+    /**
+     * 前のLP(「タイちゃんの思考を、そのまま聞ける部屋」。文言は content/kabuSalon.ts)。
+     * 比較用に残す。検索には出さない。
+     */
+    lpV1: "/kabu-salon/v1",
     /**
      * LPを公開しているドメイン(X の告知で使っているもの)。
      * canonical と、シェア画像の絶対URLを組み立てるのに使う。環境変数 SITE_URL があればそちらが優先。
@@ -125,8 +132,10 @@ export const kabuSalonConfig = {
     width: 1200,
     height: 630,
     images: {
-      lp: "/kabu-salon/og/kabu-salon.png",
-      lpV2: "/kabu-salon/og/kabu-salon-v2.png",
+      /** 本線(新LP)のカード。ファイル名はデザインの名前(v2)のまま */
+      lp: "/kabu-salon/og/kabu-salon-v2.png",
+      /** 前のLPのカード */
+      lpV1: "/kabu-salon/og/kabu-salon.png",
     },
   },
 } as const;

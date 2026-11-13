@@ -1,7 +1,10 @@
 import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 
 /**
- * 株分析サロンLPの全文言。
+ * 株分析サロン 前のLP(/kabu-salon/v1。ファンクラブ型)の全文言。
+ * 2026/11/13 に本線(/kabu-salon)を新LPへ差し替えた。新LPの文言は kabuSalonV2.ts。
+ * このファイルの FAQ(共通)・参加までの流れ・免責・フッターは、新LPからも使っている。
+ * ボタンの切り替えは config の enrollment.v1Open(本線の open とは別)。
  *
  * 2026/09/17 方針転換(本人の言葉より):
  * - このサロンは稼ぐために開くものではなく「タイちゃんの思考・分析・リサーチをお金をもらいながら続けるため」のもの。
@@ -25,14 +28,14 @@ import { kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 const { pricing, operator, name, zoom, enrollment } = kabuSalonConfig;
 
 /** ボタンの文言(募集中は申込、停止中は LINE で待機) */
-const ctaLabel = enrollment.open
+const ctaLabel = enrollment.v1Open
   ? pricing.earlyBirdOpen
     ? "先行価格で申し込む"
     : "申し込む"
   : "LINE@で待機する";
 
 /**
- * 参加の手間や不安に答える質問(今のLP・新LPで共通)。
+ * 参加の手間や不安に答える質問(前のLP・新LPで共通)。
  * 事実は特商法(動作環境)・プライバシーポリシー(カメラとマイクはオフで参加できる)と揃える。
  */
 export const kabuSalonSharedFaq = [
@@ -55,7 +58,7 @@ export const kabuSalonSharedFaq = [
 ] as const;
 
 /**
- * お金と解約の質問(今のLP・新LPで共通)。事実は特商法の「支払時期」「解約方法」と揃える。
+ * お金と解約の質問(前のLP・新LPで共通)。事実は特商法の「支払時期」「解約方法」と揃える。
  */
 export const kabuSalonBillingFaq = [
   {
@@ -76,7 +79,7 @@ export const kabuSalonCopy = {
   },
 
   hero: {
-    badge: !enrollment.open
+    badge: !enrollment.v1Open
       ? "MEMBERSHIP — 今期の募集は終了"
       : pricing.earlyBirdOpen
         ? `MEMBERSHIP — 先着${pricing.earlyBirdSeats}名 先行価格`
@@ -90,12 +93,12 @@ export const kabuSalonCopy = {
     ],
     priceLine: pricing.earlyBirdOpen
       ? `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。先着${pricing.earlyBirdSeats}名は ${yen(pricing.earlyBird)}(税込 ${yen(withTax(pricing.earlyBird))})。`
-      : `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。${enrollment.open ? "" : "今期の募集は終了しました。"}`,
+      : `月額 ${yen(pricing.regular)}(税込 ${yen(withTax(pricing.regular))})。${enrollment.v1Open ? "" : "今期の募集は終了しました。"}`,
     cta: ctaLabel,
     /** ナビ右上の小さいボタン */
-    navCta: enrollment.open ? "申し込む" : "LINEで待機",
+    navCta: enrollment.v1Open ? "申し込む" : "LINEで待機",
     ctaSecondary: "なぜ作ったかを読む",
-    ctaNote: enrollment.open
+    ctaNote: enrollment.v1Open
       ? "Discordでログインして決済すると、1分ほどで会員の部屋が開きます。"
       : "次の募集は、LINEで最初にお知らせします。",
   },
@@ -345,7 +348,7 @@ export const kabuSalonCopy = {
      * 価格カードの中の一言。募集停止中と、先行価格の受付中だけ出す。
      * それ以外(通常価格で募集中)は null にして、カードには billing を出す。
      */
-    cardNote: !enrollment.open
+    cardNote: !enrollment.v1Open
       ? "今期の募集は終了しました。次の募集はLINEでお知らせします。"
       : pricing.earlyBirdOpen
         ? "先行価格は、在籍している限り値上げしません。"

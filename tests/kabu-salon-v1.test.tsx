@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import KabuSalonPage from "@/app/kabu-salon/page";
+import KabuSalonPage, { metadata } from "@/app/kabu-salon/v1/page";
 import { isLaunchFreePeriod, kabuSalonConfig, withTax, yen } from "@/config/kabuSalon";
 import { kabuSalonCopy } from "@/content/kabuSalon";
 import { kabuSalonImages } from "@/content/kabuSalonImages";
@@ -47,7 +47,14 @@ afterEach(() => {
   fsState.exists = null;
 });
 
-describe("株分析サロンLP", () => {
+// 2026/11/13 に本線(/kabu-salon)を新LPへ差し替えた。前のLPは /kabu-salon/v1 に残している
+describe("株分析サロン 前のLP(/kabu-salon/v1)", () => {
+  it("比較用に残すページなので検索に出さない(noindex)。正規URLは自分自身", () => {
+    expect(metadata.robots).toMatchObject({ index: false });
+    expect(metadata.alternates?.canonical).toBe("/kabu-salon/v1");
+    expect(metadata.alternates?.canonical).toBe(kabuSalonConfig.urls.lpV1);
+  });
+
   it("価格は設定ファイルから計算され、税込併記で表示される", () => {
     render(<KabuSalonPage />);
     const regular = yen(kabuSalonConfig.pricing.regular);
@@ -70,7 +77,7 @@ describe("株分析サロンLP", () => {
       expect(text).not.toContain(`先着${kabuSalonConfig.pricing.earlyBirdSeats}名`);
       // 募集中のカードには「先行価格は終わった」とは書かず、初回の決済の条件を出す
       expect(text).not.toContain("先行価格の受付は終了しました");
-      if (!kabuSalonConfig.enrollment.open) {
+      if (!kabuSalonConfig.enrollment.v1Open) {
         expect(text).toContain("今期の募集は終了しました");
       }
       for (const link of screen.queryAllByRole("link", { name: /申し込む/ })) {
@@ -110,14 +117,14 @@ describe("株分析サロンLP", () => {
       )
     );
     expect(ctas).toHaveLength(4);
-    const expected = enrollment.open ? urls.apply : urls.waitlist;
+    const expected = enrollment.v1Open ? urls.apply : urls.waitlist;
     for (const link of ctas) {
       expect(link).toHaveAttribute("href", expected);
     }
     const hrefs = Array.from(container.querySelectorAll("a")).map((a) =>
       a.getAttribute("href")
     );
-    if (enrollment.open) {
+    if (enrollment.v1Open) {
       for (const link of ctas) expect(link.textContent).toMatch(/申し込む/);
       expect(hrefs).not.toContain(urls.waitlist);
     } else {
@@ -194,7 +201,7 @@ describe("株分析サロンLP", () => {
       (el) => el.textContent ?? ""
     );
     expect(steps).toHaveLength(4);
-    if (kabuSalonConfig.enrollment.open) {
+    if (kabuSalonConfig.enrollment.v1Open) {
       expect(steps[0]).toContain("申込ボタンから");
       expect(container.querySelector(".hero__after")).toBeNull();
     } else {
