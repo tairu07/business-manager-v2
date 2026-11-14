@@ -2,7 +2,8 @@
 //
 //   node scripts/kabu-salon-og.mjs
 //
-// - 出力: public/kabu-salon/og/kabu-salon-v2.png(本線=新LP)、kabu-salon.png(前のLP)。1200×630
+// - 出力: public/kabu-salon/og/kabu-salon-v2.png(本線=新LP)、kabu-salon.png(前のLP)、
+//   kabu-salon-v3.png(3つ目のLP)。1200×630
 // - Playwright はグローバルに入っているものを使う(このリポジトリの依存には入れていない)
 // - 見出しを変えたら、下の CARDS も同じ文言に直して作り直し、
 //   src/config/kabuSalon.ts の share.version を上げる(X が古い画像を覚えているため)
@@ -28,6 +29,12 @@ export const CARDS = [
     lines: ["バリュー株を、", "自分で見つけたい人へ。"],
     gold: "自分で",
     sub: "答えではなく、探し方を見せる。毎週、Zoomで配信。",
+  },
+  {
+    file: "kabu-salon-v3.png",
+    lines: ["本業・副業・投資を、", "1:1:1に。"],
+    gold: "1:1:1",
+    sub: "毎週のZoom配信と、個別の面談。",
   },
 ];
 

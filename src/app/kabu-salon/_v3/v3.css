@@ -1,0 +1,185 @@
+/*
+ * 3つ目のLP(/kabu-salon/v3。「本業・副業・投資を 1:1:1 に」)だけの追加スタイル。
+ * ほかのLPに影響しないよう .ks-v3 の中に閉じる。色・書体は kabu-salon.css の変数をそのまま使う。
+ */
+
+/* ---------- ヒーロー: 1:1:1 を目で見せる帯 ---------- */
+.ks-v3 .hero__ratio {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 22px;
+  margin: 0 auto 30px;
+  font-family: var(--serif);
+}
+.ks-v3 .hero__ratio-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 3.6em;
+}
+.ks-v3 .hero__ratio-num {
+  font-size: 2.3rem;
+  line-height: 1;
+  color: var(--gold);
+}
+.ks-v3 .hero__ratio-label {
+  font-size: 0.74rem;
+  letter-spacing: 0.3em;
+  /* 字間のぶん右に寄るのを打ち消す */
+  margin-right: -0.3em;
+  color: var(--kinari-dim);
+}
+.ks-v3 .hero__ratio-sep {
+  font-size: 1.7rem;
+  line-height: 2.3rem;
+  color: var(--gold);
+  opacity: 0.85;
+}
+/* ほかのヒーローの部品と同じ出方にする(見出しのあと、リードの前) */
+.ks.ks-v3.js .hero__ratio {
+  opacity: 0;
+  animation: ks-fadeUp 1s ease 1s forwards;
+}
+
+/* ---------- 1:1:1 の3本柱 ---------- */
+.ks-v3 .ratio {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--gold-line);
+  border: 1px solid var(--gold-line);
+}
+.ks-v3 .ratio__col {
+  position: relative;
+  background: var(--ink);
+  padding: 52px 30px 48px;
+}
+.ks-v3 .section--alt .ratio__col {
+  background: var(--ink-2);
+}
+.ks-v3 .ratio__mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.ks-v3 .ratio__num {
+  font-family: var(--serif);
+  font-size: clamp(3.4rem, 6.4vw, 4.6rem);
+  line-height: 1;
+  color: var(--gold);
+}
+.ks-v3 .ratio__label {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.4em;
+  margin-right: -0.4em;
+  color: var(--kinari);
+}
+/* 柱と柱の間のコロン(金罫の上に置く) */
+.ks-v3 .ratio__col + .ratio__col::before {
+  content: ":";
+  position: absolute;
+  left: 0;
+  top: 52px;
+  transform: translateX(-50%);
+  padding: 6px 0;
+  background: inherit;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.6vw, 2.6rem);
+  line-height: clamp(2.6rem, 5vw, 3.6rem);
+  color: var(--gold);
+}
+.ks-v3 .ratio__text {
+  margin-top: 30px;
+  padding-top: 28px;
+  border-top: 1px solid var(--gold-line);
+}
+.ks-v3 .ratio__title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+  text-align: center;
+  text-wrap: balance;
+}
+.ks-v3 .ratio__desc {
+  margin-top: 14px;
+  font-size: 0.86rem;
+  color: var(--kinari-dim);
+  line-height: 2;
+}
+
+/* 引用と段落の節は、見出しとの間を少しあける */
+.ks-v3 .v3-okami {
+  margin-top: 48px;
+}
+
+@media (max-width: 860px) {
+  /* 柱を縦に積む。左に「1」と柱の名前、右に説明 */
+  .ks-v3 .ratio {
+    grid-template-columns: 1fr;
+  }
+  .ks-v3 .ratio__col {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 0 22px;
+    align-items: start;
+    padding: 34px 22px 32px;
+  }
+  .ks-v3 .ratio__col + .ratio__col::before {
+    content: none;
+  }
+  .ks-v3 .ratio__mark {
+    gap: 10px;
+  }
+  .ks-v3 .ratio__num {
+    font-size: 3rem;
+  }
+  .ks-v3 .ratio__label {
+    font-size: 0.82rem;
+    letter-spacing: 0.3em;
+    margin-right: -0.3em;
+  }
+  .ks-v3 .ratio__text {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  .ks-v3 .ratio__title {
+    text-align: left;
+    font-size: 1.05rem;
+  }
+  .ks-v3 .ratio__desc {
+    margin-top: 8px;
+  }
+}
+@media (max-width: 600px) {
+  .ks-v3 .hero__ratio {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .ks-v3 .hero__ratio-num {
+    font-size: 2rem;
+  }
+  .ks-v3 .hero__ratio-sep {
+    line-height: 2rem;
+  }
+}
+/* 幅のせまいスマホ(320px 台)でも、見出しの1行(10文字)が折れないようにする */
+@media (max-width: 359px) {
+  .ks.ks-v3 .hero__title {
+    font-size: 1.6rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ks.ks-v3.js .hero__ratio {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}

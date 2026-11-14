@@ -72,6 +72,11 @@ export const kabuSalonConfig = {
      * 比較用に残しているページなので、ふだんは false(LINE 待機)のままでよい。
      */
     v1Open: false,
+    /**
+     * 3つ目のLP(/kabu-salon/v3。「本業・副業・投資を 1:1:1 に」)の申込ボタンを開くか。
+     * 本線の open とは別に切り替える。
+     */
+    v3Open: false,
   },
 
   /**
@@ -117,6 +122,11 @@ export const kabuSalonConfig = {
      */
     lpV1: "/kabu-salon/v1",
     /**
+     * 3つ目のLP(「本業・副業・投資を 1:1:1 に」。文言は content/kabuSalonV3.ts)。
+     * 2026/11/14 の本人の録音(サロンをどういうサロンにしていきたいか)をもとに作った。検索には出さない。
+     */
+    lpV3: "/kabu-salon/v3",
+    /**
      * LPを公開しているドメイン(X の告知で使っているもの)。
      * canonical と、シェア画像の絶対URLを組み立てるのに使う。環境変数 SITE_URL があればそちらが優先。
      */
@@ -136,6 +146,8 @@ export const kabuSalonConfig = {
       lp: "/kabu-salon/og/kabu-salon-v2.png",
       /** 前のLPのカード */
       lpV1: "/kabu-salon/og/kabu-salon.png",
+      /** 3つ目のLPのカード */
+      lpV3: "/kabu-salon/og/kabu-salon-v3.png",
     },
   },
 } as const;

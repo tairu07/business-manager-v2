@@ -3,9 +3,11 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { metadata as lpMetadata } from "@/app/kabu-salon/page";
 import { metadata as lpV1Metadata } from "@/app/kabu-salon/v1/page";
+import { metadata as lpV3Metadata } from "@/app/kabu-salon/_v3/page";
 import { kabuSalonBaseUrl, kabuSalonConfig } from "@/config/kabuSalon";
 import { kabuSalonCopy } from "@/content/kabuSalon";
 import { kabuSalonV2Copy } from "@/content/kabuSalonV2";
+import { kabuSalonV3Copy } from "@/content/kabuSalonV3";
 
 const ROOT = path.resolve(__dirname, "..");
 const { share, urls } = kabuSalonConfig;
@@ -33,6 +35,7 @@ describe("株分析サロンLP シェア時のカード(X など)", () => {
   it.each([
     ["本線(新LP)", lpMetadata, urls.lp, share.images.lp, kabuSalonV2Copy.meta],
     ["前のLP", lpV1Metadata, urls.lpV1, share.images.lpV1, kabuSalonCopy.meta],
+    ["3つ目のLP", lpV3Metadata, urls.lpV3, share.images.lpV3, kabuSalonV3Copy.meta],
   ] as const)(
     "%s: 大きい画像カードの情報が揃っている",
     (_name, meta, lpPath, image, copy) => {
@@ -85,6 +88,9 @@ describe("株分析サロンLP シェア時のカード(X など)", () => {
     };
     expect(cardLines(share.images.lp)).toEqual([...kabuSalonV2Copy.hero.heading]);
     expect(cardLines(share.images.lpV1)).toEqual([...kabuSalonCopy.hero.heading]);
-    expect(share.images.lp).not.toBe(share.images.lpV1);
+    // 3つ目のLPは、見出しが3行になることがあるので、カード用の2行を文言ファイルに持つ
+    expect(cardLines(share.images.lpV3)).toEqual([...kabuSalonV3Copy.shareCard.lines]);
+    const images = [share.images.lp, share.images.lpV1, share.images.lpV3];
+    expect(new Set(images).size).toBe(images.length);
   });
 });
